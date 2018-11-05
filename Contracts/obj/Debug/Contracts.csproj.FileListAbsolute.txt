@@ -1,0 +1,6 @@
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Contracts\bin\Debug\Contracts.dll
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Contracts\bin\Debug\Contracts.pdb
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Contracts\obj\Debug\Contracts.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Contracts\obj\Debug\Contracts.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Contracts\obj\Debug\Contracts.dll
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Contracts\obj\Debug\Contracts.pdb

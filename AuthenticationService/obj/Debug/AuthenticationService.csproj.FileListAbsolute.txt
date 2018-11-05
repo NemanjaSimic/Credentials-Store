@@ -1,0 +1,5 @@
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\AuthenticationService\obj\Debug\AuthenticationService.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\AuthenticationService\bin\Debug\AuthenticationService.exe
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\AuthenticationService\bin\Debug\AuthenticationService.pdb
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\AuthenticationService\obj\Debug\AuthenticationService.exe
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\AuthenticationService\obj\Debug\AuthenticationService.pdb
