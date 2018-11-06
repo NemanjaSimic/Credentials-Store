@@ -11,6 +11,11 @@ namespace Contracts
     [DataContract]
     public class User
     {
+        public User(string username, SecureString password)
+        {
+            Username = username;
+            Password = password;
+        }
         [DataMember]
         public String Username { get; set; }
         [DataMember]

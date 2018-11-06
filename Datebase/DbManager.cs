@@ -8,7 +8,7 @@ using Contracts;
 
 namespace Datebase
 {
-    class DBManager
+    public class DBManager
     {
         private DBManager() { }
         private static DBManager instance;

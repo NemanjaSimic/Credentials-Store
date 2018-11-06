@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ServiceModel;
+using System.Security;
 
 namespace Contracts
 {
@@ -11,10 +12,10 @@ namespace Contracts
     public interface IAccountManagement
     {
         [OperationContract]
-        bool CreateAccount();
+        bool CreateAccount(string username, SecureString password);
         [OperationContract]
-        bool DeleteAccount();
+        bool DeleteAccount(string username);
         [OperationContract]
-        bool ResetPassword();
+        bool ResetPassword(string username, SecureString password);
     }
 }
