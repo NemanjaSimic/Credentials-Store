@@ -12,7 +12,7 @@ namespace CredentialsStore
 {
     class AccountManagement : IAccountManagement
     {
-        public bool CreateAccount(string username, SecureString password)
+        public bool CreateAccount(string username, int password)
         {
             
             User user = new User(username, password);
@@ -40,7 +40,7 @@ namespace CredentialsStore
             }
         }
 
-        public bool ResetPassword(string username,SecureString newPassword)
+        public bool ResetPassword(string username,int newPassword)
         {
             User user = DBManager.Instance.GetUserByUsername(username);
             if (DBManager.Instance.ResetPassword(user, newPassword))

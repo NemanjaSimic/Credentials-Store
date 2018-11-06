@@ -11,7 +11,7 @@ namespace Contracts
     [DataContract]
     public class User
     {
-        public User(string username, SecureString password)
+        public User(string username, int password)
         {
             Username = username;
             Password = password;
@@ -19,6 +19,8 @@ namespace Contracts
         [DataMember]
         public String Username { get; set; }
         [DataMember]
-        public SecureString Password {get; set;}
+        public int Password { get; set; }
+		[DataMember]
+		public bool IsAuthenticated { get; set; } = false;
     }
 }

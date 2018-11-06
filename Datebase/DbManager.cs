@@ -47,7 +47,7 @@ namespace Datebase
             return retVal;
         }
 
-        public bool ResetPassword(User user,SecureString newPass)
+        public bool ResetPassword(User user,int newPass)
         {
             bool retVal = false;
             if (DataBaseContext.Credentials.Contains(user))
