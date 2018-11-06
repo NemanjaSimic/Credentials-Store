@@ -1,0 +1,13 @@
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Datebase\bin\Debug\Datebase.dll.config
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Datebase\bin\Debug\Datebase.dll
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Datebase\bin\Debug\Datebase.pdb
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Datebase\bin\Debug\Contracts.dll
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Datebase\bin\Debug\EntityFramework.dll
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Datebase\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Datebase\bin\Debug\Contracts.pdb
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Datebase\bin\Debug\EntityFramework.xml
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Datebase\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Datebase\obj\Debug\Datebase.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Datebase\obj\Debug\Datebase.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Datebase\obj\Debug\Datebase.dll
+C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Datebase\obj\Debug\Datebase.pdb
