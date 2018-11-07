@@ -12,5 +12,6 @@ namespace Contracts
     {
         [OperationContract]
         bool ResetPassword();
+
     }
 }

@@ -17,5 +17,6 @@ namespace Contracts
 		[OperationContract]
 		[FaultContract(typeof(SecurityException))]
 		void Logout(string username);
+
 	}
 }

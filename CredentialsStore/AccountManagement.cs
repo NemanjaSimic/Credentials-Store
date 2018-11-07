@@ -14,8 +14,8 @@ namespace CredentialsStore
     {
         public bool CreateAccount(string username, int password)
         {
-            
             User user = new User(username, password);
+			//proveriti sifru
             if (DBManager.Instance.AddUser(user))
             {
                 return true;
@@ -42,6 +42,7 @@ namespace CredentialsStore
 
         public bool ResetPassword(string username,int newPassword)
         {
+			//proveri sifru
             User user = DBManager.Instance.GetUserByUsername(username);
             if (DBManager.Instance.ResetPassword(user, newPassword))
                 return true;

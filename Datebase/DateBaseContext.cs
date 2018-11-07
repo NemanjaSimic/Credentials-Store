@@ -16,6 +16,6 @@ namespace Datebase
 
         }
 
-        public static DbSet<User> Credentials { get; set; }
+        public  DbSet<User> Credentials { get; set; }
     }
 }

@@ -28,48 +28,63 @@ namespace Datebase
         public bool AddUser(User newUser)
         {
             bool retVal = false;
-            if (!DataBaseContext.Credentials.Contains(newUser))
-            {
-                DataBaseContext.Credentials.Add(newUser);
-                retVal = true;
-            }
+			using (var dbContext = new DataBaseContext())
+			{
+				if (!dbContext.Credentials.Contains(newUser))
+				{
+					dbContext.Credentials.Add(newUser);
+					retVal = true;
+					dbContext.SaveChanges();
+				}
+			}
             return retVal;
         }
 
         public bool DeleteUser(User user)
         {
             bool retVal = false;
-            if (DataBaseContext.Credentials.Contains(user))
-            {
-                DataBaseContext.Credentials.Remove(user);
-                retVal = true;
-            }
+			using (var dbContext = new DataBaseContext())
+			{
+				if (dbContext.Credentials.Contains(user))
+				{
+					dbContext.Credentials.Remove(user);
+					retVal = true;
+					dbContext.SaveChanges();
+				}
+			}
             return retVal;
         }
 
-        public bool ResetPassword(User user,int newPass)
-        {
-            bool retVal = false;
-            if (DataBaseContext.Credentials.Contains(user))
-            {
-                DataBaseContext.Credentials.Remove(user);
-                user.Password = newPass;
-                DataBaseContext.Credentials.Add(user);
-                retVal = true;
-            }
+		public bool ResetPassword(User user, int newPass)
+		{
+			bool retVal = false;
+			using (var dbContext = new DataBaseContext())
+			{
+				if (dbContext.Credentials.Contains(user))
+				{
+					dbContext.Credentials.Remove(user);
+					user.Password = newPass;
+					dbContext.Credentials.Add(user);
+					dbContext.SaveChanges();
+					retVal = true;
+				}
+			}
             return retVal;
         }
 
         public User GetUserByUsername(string username)
         {
             User retUser = null;
-            foreach (User user in DataBaseContext.Credentials)
-            {
-                if (user.Username.Equals(username))
-                {
-                    retUser = user;
-                }
-            }
+			using (var dbContext = new DataBaseContext())
+			{
+				foreach (User user in dbContext.Credentials)
+				{
+					if (user.Username.Equals(username))
+					{
+						retUser = user;
+					}
+				}
+			}
             return retUser;
         }
 

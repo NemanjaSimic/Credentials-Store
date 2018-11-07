@@ -15,6 +15,8 @@ namespace Contracts
         {
             Username = username;
             Password = password;
+			//period vazenja
+			//sadasnje vreme
         }
         [DataMember]
         public String Username { get; set; }

@@ -11,7 +11,6 @@ namespace AuthenticationService
 {
 	public class AuthenticationService : IAuthenticationService
 	{
-	
 		public void Login(string username, int password)
 		{
 			User current = DBManager.Instance.GetUserByUsername(username);
