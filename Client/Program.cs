@@ -8,59 +8,37 @@ namespace Client
 	class Program
     {
         static void Main(string[] args)
-        {				
-			if (IsAdmin())
+        {
+			while (true)
 			{
-				NetTcpBinding binding = MakeBinding();
-				string address = "net.tcp://localhost:9999/AccountManagement";
-				using (ProxyAccountManagement proxy = new ProxyAccountManagement(binding,new EndpointAddress(new Uri(address))))
+				char op;
+				do
 				{
-					bool exit = false;
-					while (!exit)
-					{
-						switch (AdminMenu())
-						{
-							case '1':
-								//proxy.CreateAccount();
-								break;
-							case '2':
-								//proxy.DeleteAccount();
-								break;
-							case '3':
-								//proxy.ResetPassword();
-								break;
-							default:
-								exit = true;
-								break;
-						}
-					}
-				}
-			}
-			else
-			{
-				NetTcpBinding bindingForAuthenticationService = MakeBinding();
-				string addressForAuthenticationService = "net.tcp://localhost:9999/AuthenticationService";
-				using (ProxyAuthenticationService proxyAuthSrvc = new ProxyAuthenticationService(bindingForAuthenticationService, new EndpointAddress(new Uri(addressForAuthenticationService))))
+					Console.WriteLine("Connect to service like:");
+					Console.WriteLine("1.Admin");
+					Console.WriteLine("2.Regular user");
+					op = (char)Console.Read();
+				} while (op != '1' && op != '2');
+
+				if (op == '1')
 				{
-					NetTcpBinding bindingForAccountManagement = MakeBinding();
-					string addressForUserAccountManagement = "net.tcp://localhost:9999/CredentialsStore";
-					using (ProxyUserAccountManagement proxyAccMngmnt = new ProxyUserAccountManagement(bindingForAccountManagement, new EndpointAddress(new Uri(addressForUserAccountManagement))))
+					NetTcpBinding binding = MakeBinding();
+					string address = "net.tcp://localhost:9999/AccountManagement";
+					using (ProxyAccountManagement proxy = new ProxyAccountManagement(binding, new EndpointAddress(new Uri(address))))
 					{
 						bool exit = false;
-						string username;
-						SecureString password;
 						while (!exit)
 						{
-							switch (RegularUserMenu())
+							switch (AdminMenu())
 							{
 								case '1':
-									//proxyAuthSrvc.Login();
+									//proxy.CreateAccount();
 									break;
 								case '2':
-									//proxyAuthSrvc.Logout();
+									//proxy.DeleteAccount();
 									break;
 								case '3':
-									//proxyAccMngmnt.ResetPassword();
+									//proxy.ResetPassword();
 									break;
 								default:
 									exit = true;
@@ -69,23 +47,57 @@ namespace Client
 						}
 					}
 				}
+				else
+				{
+					NetTcpBinding bindingForAuthenticationService = MakeBinding();
+					string addressForAuthenticationService = "net.tcp://localhost:9996/AuthenticationService";
+					using (ProxyAuthenticationService proxyAuthSrvc = new ProxyAuthenticationService(bindingForAuthenticationService, new EndpointAddress(new Uri(addressForAuthenticationService))))
+					{
+						NetTcpBinding bindingForAccountManagement = MakeBinding();
+						string addressForUserAccountManagement = "net.tcp://localhost:9998/UserAccountManagement";
+						using (ProxyUserAccountManagement proxyAccMngmnt = new ProxyUserAccountManagement(bindingForAccountManagement, new EndpointAddress(new Uri(addressForUserAccountManagement))))
+						{
+							bool exit = false;
+							//string username;
+							//SecureString password;
+							while (!exit)
+							{
+								switch (RegularUserMenu())
+								{
+									case '1':
+										//proxyAuthSrvc.Login();
+										break;
+									case '2':
+										//proxyAuthSrvc.Logout();
+										break;
+									case '3':
+										//proxyAccMngmnt.ResetPassword();
+										break;
+									default:
+										exit = true;
+										break;
+								}
+							}
+						}
+					}
+				}
 			}
 
 		}
-		static bool IsAdmin()
-		{
-			bool retVal = false;
-			foreach (var group in WindowsIdentity.GetCurrent().Groups)
-			{
-				SecurityIdentifier sid = (SecurityIdentifier)group.Translate(typeof(SecurityIdentifier));
-				var name = sid.Translate(typeof(NTAccount));
-				if (name.Value.Contains("Admin"))
-				{
-					retVal = true;
-				}
-			}
-			return retVal;
-		}
+		//static bool IsAdmin()
+		//{
+		//	bool retVal = false;
+		//	foreach (var group in WindowsIdentity.GetCurrent().Groups)
+		//	{
+		//		SecurityIdentifier sid = (SecurityIdentifier)group.Translate(typeof(SecurityIdentifier));
+		//		var name = sid.Translate(typeof(NTAccount));
+		//		if (name.Value.Contains("Admin"))
+		//		{
+		//			retVal = true;
+		//		}
+		//	}
+		//	return retVal;
+		//}
 
 		static char AdminMenu()
 		{

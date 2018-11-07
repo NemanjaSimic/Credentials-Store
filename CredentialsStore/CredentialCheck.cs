@@ -20,7 +20,7 @@ namespace CredentialsStore
             {
                 if(user.Password == password)
                 {
-                    Console.WriteLine("User ulogovan");
+                   // Console.WriteLine("User ulogovan");
                 }
                 else
                 {

@@ -11,7 +11,7 @@ namespace AuthenticationService
     {
         public void NotifyClient()
         {
-            Console.WriteLine("Password Timeout, LOGOUT");
+            Console.WriteLine("Your password has expired, you need to reset it. You will be logged out...");
         }
     }
 }

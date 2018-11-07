@@ -10,36 +10,45 @@ using System.ServiceModel;
 
 namespace AuthenticationService
 {
-	public class AuthenticationService : ChannelFactory<ICredentialCheck>,IAuthenticationService
+	public class AuthenticationService : IAuthenticationService, IAuthenticationCheck
 	{
-        ICredentialCheck factory;
-        Dictionary<string, ILogoutNotification> loggedUsers = new Dictionary<string, ILogoutNotification>();
-
-        public AuthenticationService(NetTcpBinding binding, string address): base(binding, address)
-        {
-            factory = this.CreateChannel();
-        }
+		private Dictionary<string, ILogoutNotification> loggedUsers = new Dictionary<string, ILogoutNotification>();
+		private NetTcpBinding binding = new NetTcpBinding();
+		private string address = "net.tcp://localhost:9997/CredentialCheck";
 		public void Login(string username, int password)
 		{
-            try
-            {
-                factory.ValidateCredential(username, password);
-                ILogoutNotification CallbackService = OperationContext.Current.GetCallbackChannel<ILogoutNotification>();
-                loggedUsers.Add(username,CallbackService);
-            }
-            catch (SecurityException ex)
-            {
-                throw ex;
-            }
+			using (ProxyCredentialsStore proxy = new ProxyCredentialsStore(binding, new EndpointAddress(new Uri(address))))
+			{
+				try
+				{
+					proxy.ValidateCredential(username, password);
+					ILogoutNotification CallbackService = OperationContext.Current.GetCallbackChannel<ILogoutNotification>();
+					loggedUsers.Add(username, CallbackService);
+				}
+				catch (SecurityException ex)
+				{
+					throw ex;
+				}
+			}
+            
 		}
 
 		public void Logout(string username)
 		{
-            if (loggedUsers.ContainsKey(username))
-            {
-                loggedUsers.Remove(username);
-            }
+			if (loggedUsers.ContainsKey(username))
+			{
+				loggedUsers.Remove(username);
+			}
+			else
+			{
+				SecurityException ex = new SecurityException("User already logged out");
+				throw ex;
+			}
 		}
 
+		public bool IsAuthenticated(string username)
+		{
+			return loggedUsers.ContainsKey(username);
+		}
 	}
 }
