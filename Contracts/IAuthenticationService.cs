@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Contracts
 {
-	[ServiceContract]
+	[ServiceContract(CallbackContract =typeof(ILogoutNotification))]
 	public interface IAuthenticationService
 	{
 		[OperationContract]

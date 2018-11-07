@@ -44,7 +44,9 @@
   <ItemGroup>
     <Compile Include="IAccountManagement.cs" />
     <Compile Include="IAuthenticationService.cs" />
+    <Compile Include="ICredentialCheck.cs" />
     <Compile Include="IUserAccountManagement.cs" />
+    <Compile Include="ILogoutNotification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>

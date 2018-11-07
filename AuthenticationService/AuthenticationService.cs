@@ -6,65 +6,40 @@ using System.Text;
 using System.Threading.Tasks;
 using Contracts;
 using Datebase;
+using System.ServiceModel;
 
 namespace AuthenticationService
 {
-	public class AuthenticationService : IAuthenticationService
+	public class AuthenticationService : ChannelFactory<ICredentialCheck>,IAuthenticationService
 	{
+        ICredentialCheck factory;
+        Dictionary<string, ILogoutNotification> loggedUsers = new Dictionary<string, ILogoutNotification>();
+
+        public AuthenticationService(NetTcpBinding binding, string address): base(binding, address)
+        {
+            factory = this.CreateChannel();
+        }
 		public void Login(string username, int password)
 		{
-			User current = DBManager.Instance.GetUserByUsername(username);
-			if (current != null)
-			{
-				if (!current.IsAuthenticated)
-				{
-					if (current.Password == password)
-					{
-						DBManager.Instance.DeleteUser(current);
-						current.IsAuthenticated = true;
-						DBManager.Instance.AddUser(current);
-					}
-					else
-					{
-						SecurityException ex = new SecurityException("Bad password!");
-						throw ex;
-					}
-				}
-				else
-				{
-					SecurityException ex = new SecurityException("User already logged in!");
-					throw ex;
-				}
-			}
-			else
-			{
-				SecurityException ex = new SecurityException("Username does not exist!");
-				throw ex;
-			}
+            try
+            {
+                factory.ValidateCredential(username, password);
+                ILogoutNotification CallbackService = OperationContext.Current.GetCallbackChannel<ILogoutNotification>();
+                loggedUsers.Add(username,CallbackService);
+            }
+            catch (SecurityException ex)
+            {
+                throw ex;
+            }
 		}
 
 		public void Logout(string username)
 		{
-			User current = DBManager.Instance.GetUserByUsername(username);
-			if (current != null)
-			{
-				if (current.IsAuthenticated)
-				{
-					DBManager.Instance.DeleteUser(current);
-					current.IsAuthenticated = false;
-					DBManager.Instance.AddUser(current);
-				}
-				else
-				{
-					SecurityException ex = new SecurityException("User already logged out!");
-					throw ex;
-				}
-			}
-			else
-			{
-				SecurityException ex = new SecurityException("Username does not exist!");
-				throw ex;
-			}
+            if (loggedUsers.ContainsKey(username))
+            {
+                loggedUsers.Remove(username);
+            }
 		}
+
 	}
 }
