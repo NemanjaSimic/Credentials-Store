@@ -55,22 +55,22 @@ namespace Datebase
             return retVal;
         }
 
-		public bool ResetPassword(User user, int newPass)
-		{
-			bool retVal = false;
-			using (var dbContext = new DataBaseContext())
-			{
-				if (dbContext.Credentials.Contains(user))
-				{
-					dbContext.Credentials.Remove(user);
-					user.Password = newPass;
-					dbContext.Credentials.Add(user);
-					dbContext.SaveChanges();
-					retVal = true;
-				}
-			}
-            return retVal;
-        }
+		//public bool ResetPassword(User user, int newPass)
+		//{
+		//	bool retVal = false;
+		//	using (var dbContext = new DataBaseContext())
+		//	{
+		//		if (dbContext.Credentials.Contains(user))
+		//		{
+		//			dbContext.Credentials.Remove(user);
+		//			user.Password = newPass;
+		//			dbContext.Credentials.Add(user);
+		//			dbContext.SaveChanges();
+		//			retVal = true;
+		//		}
+		//	}
+  //          return retVal;
+  //      }
 
         public User GetUserByUsername(string username)
         {

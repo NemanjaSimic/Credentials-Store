@@ -4,3 +4,8 @@ C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Contracts\obj\D
 C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Contracts\obj\Debug\Contracts.csproj.CoreCompileInputs.cache
 C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Contracts\obj\Debug\Contracts.dll
 C:\Users\Administrator\Desktop\Nemanja\Projekat\CredentialsStore\Contracts\obj\Debug\Contracts.pdb
+D:\Downloads\Credentials-Store-master\Credentials-Store\Contracts\bin\Debug\Contracts.dll
+D:\Downloads\Credentials-Store-master\Credentials-Store\Contracts\bin\Debug\Contracts.pdb
+D:\Downloads\Credentials-Store-master\Credentials-Store\Contracts\obj\Debug\Contracts.csproj.CoreCompileInputs.cache
+D:\Downloads\Credentials-Store-master\Credentials-Store\Contracts\obj\Debug\Contracts.dll
+D:\Downloads\Credentials-Store-master\Credentials-Store\Contracts\obj\Debug\Contracts.pdb

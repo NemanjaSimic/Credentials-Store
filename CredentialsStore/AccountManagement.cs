@@ -12,19 +12,26 @@ namespace CredentialsStore
 {
     class AccountManagement : IAccountManagement
     {
-        public bool CreateAccount(string username, int password)
+        public bool CreateAccount(string username, SecureString password)
         {
-            User user = new User(username, password);
-			//proveriti sifru
-            if (DBManager.Instance.AddUser(user))
+            //proveriti sifru
+            if (Security.PasswordPolicy.ValidatePassword(password))
             {
-                return true;
+                int pass = password.GetHashCode();
+                User user = new User(username, pass);
+                if (DBManager.Instance.AddUser(user))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
                 return false;
             }
-
         }
 
         public bool DeleteAccount(string username)
@@ -40,14 +47,36 @@ namespace CredentialsStore
             }
         }
 
-        public bool ResetPassword(string username,int newPassword)
+        public bool ResetPassword(string username,SecureString newPassword)
         {
-			//proveri sifru
+            //proveri sifru
             User user = DBManager.Instance.GetUserByUsername(username);
-            if (DBManager.Instance.ResetPassword(user, newPassword))
-                return true;
+            if (Security.PasswordPolicy.ValidatePassword(newPassword))
+            {
+                int newPass = newPassword.GetHashCode();
+
+                //provera da li sifra nalazi vec u korisnikovim siframa
+                if (user.PasswordHistory.ContainsKey(newPass))
+                {
+                    DBManager.Instance.DeleteUser(user);
+                    user.Password = newPass;
+                    user.PasswordHistory[newPass]++;
+                }
+                else
+                {
+                    DBManager.Instance.DeleteUser(user);
+                    user.PasswordHistory.Add(newPass, 1);
+                    user.Password = newPass;
+                }
+                if (DBManager.Instance.AddUser(user))
+                    return true;
+                else
+                    return false;
+            }
             else
+            {
                 return false;
+            }
         }
     }
 }

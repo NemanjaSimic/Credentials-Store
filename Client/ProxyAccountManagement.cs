@@ -17,7 +17,7 @@ namespace Client
 		{
 			this.factory = CreateChannel();
 		}
-		public bool CreateAccount(string username, int password)
+		public bool CreateAccount(string username, SecureString password)
 		{
 			return factory.CreateAccount(username, password);
 		}
@@ -27,7 +27,7 @@ namespace Client
 			return factory.DeleteAccount(username);
 		}
 
-		public bool ResetPassword(string username, int password)
+		public bool ResetPassword(string username, SecureString password)
 		{
 			return factory.ResetPassword(username, password);
 		}

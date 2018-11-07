@@ -47,7 +47,14 @@
     <Compile Include="CustomAuthorizationPolicy.cs" />
     <Compile Include="CustomPrincipal.cs" />
     <Compile Include="GroupsAndPermissions.cs" />
+    <Compile Include="PasswordPolicy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Contracts\Contracts.csproj">
+      <Project>{f40c0f99-dbfc-400d-8514-518c9d118079}</Project>
+      <Name>Contracts</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

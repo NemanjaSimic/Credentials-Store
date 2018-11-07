@@ -1,0 +1,10 @@
+D:\Downloads\Credentials-Store-master\Credentials-Store\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
+D:\Downloads\Credentials-Store-master\Credentials-Store\Client\obj\Debug\Client.csproj.CoreCompileInputs.cache
+D:\Downloads\Credentials-Store-master\Credentials-Store\Client\bin\Debug\Client.exe.config
+D:\Downloads\Credentials-Store-master\Credentials-Store\Client\bin\Debug\Client.exe
+D:\Downloads\Credentials-Store-master\Credentials-Store\Client\bin\Debug\Client.pdb
+D:\Downloads\Credentials-Store-master\Credentials-Store\Client\bin\Debug\Contracts.dll
+D:\Downloads\Credentials-Store-master\Credentials-Store\Client\bin\Debug\Contracts.pdb
+D:\Downloads\Credentials-Store-master\Credentials-Store\Client\obj\Debug\Client.csproj.CopyComplete
+D:\Downloads\Credentials-Store-master\Credentials-Store\Client\obj\Debug\Client.exe
+D:\Downloads\Credentials-Store-master\Credentials-Store\Client\obj\Debug\Client.pdb

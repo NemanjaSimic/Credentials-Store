@@ -12,10 +12,10 @@ namespace Contracts
     public interface IAccountManagement
     {
         [OperationContract]
-        bool CreateAccount(string username, int password);
+        bool CreateAccount(string username, SecureString password);
         [OperationContract]
         bool DeleteAccount(string username);
         [OperationContract]
-        bool ResetPassword(string username, int password);
+        bool ResetPassword(string username, SecureString password);
     }
 }

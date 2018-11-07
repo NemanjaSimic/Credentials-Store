@@ -1,0 +1,9 @@
+D:\Downloads\Credentials-Store-master\Credentials-Store\Security.cs\bin\Debug\Security.cs.dll
+D:\Downloads\Credentials-Store-master\Credentials-Store\Security.cs\bin\Debug\Security.cs.pdb
+D:\Downloads\Credentials-Store-master\Credentials-Store\Security.cs\bin\Debug\Contracts.dll
+D:\Downloads\Credentials-Store-master\Credentials-Store\Security.cs\bin\Debug\Contracts.pdb
+D:\Downloads\Credentials-Store-master\Credentials-Store\Security.cs\obj\Debug\Security.cs.csprojResolveAssemblyReference.cache
+D:\Downloads\Credentials-Store-master\Credentials-Store\Security.cs\obj\Debug\Security.cs.csproj.CoreCompileInputs.cache
+D:\Downloads\Credentials-Store-master\Credentials-Store\Security.cs\obj\Debug\Security.cs.csproj.CopyComplete
+D:\Downloads\Credentials-Store-master\Credentials-Store\Security.cs\obj\Debug\Security.cs.dll
+D:\Downloads\Credentials-Store-master\Credentials-Store\Security.cs\obj\Debug\Security.cs.pdb

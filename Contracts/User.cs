@@ -15,14 +15,19 @@ namespace Contracts
         {
             Username = username;
             Password = password;
-			//period vazenja
-			//sadasnje vreme
+            PasswordHistory = new Dictionary<int, int>();
+            PasswordHistory.Add(password, 1);
+            PasswordInitialized = DateTime.Now;
+            //period vazenja
+            //sadasnje vreme
         }
         [DataMember]
         public String Username { get; set; }
         [DataMember]
         public int Password { get; set; }
-		[DataMember]
-		public bool IsAuthenticated { get; set; } = false;
+        [DataMember]
+        public Dictionary<int, int> PasswordHistory { get; set; }
+        [DataMember]
+        public DateTime PasswordInitialized { get; set; }
     }
 }
