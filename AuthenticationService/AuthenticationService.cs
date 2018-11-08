@@ -15,6 +15,7 @@ namespace AuthenticationService
 		private Dictionary<string, ILogoutNotification> loggedUsers = new Dictionary<string, ILogoutNotification>();
 		private NetTcpBinding binding = new NetTcpBinding();
 		private string address = "net.tcp://localhost:9997/CredentialCheck";
+
 		public void Login(string username, int password)
 		{
 			using (ProxyCredentialsStore proxy = new ProxyCredentialsStore(binding, new EndpointAddress(new Uri(address))))
@@ -24,6 +25,7 @@ namespace AuthenticationService
 					proxy.ValidateCredential(username, password);
 					ILogoutNotification CallbackService = OperationContext.Current.GetCallbackChannel<ILogoutNotification>();
 					loggedUsers.Add(username, CallbackService);
+					Console.WriteLine("User {0} successfully logged in!");
 				}
 				catch (SecurityException ex)
 				{
@@ -38,6 +40,7 @@ namespace AuthenticationService
 			if (loggedUsers.ContainsKey(username))
 			{
 				loggedUsers.Remove(username);
+				Console.WriteLine("User {0} successfully logged out!");
 			}
 			else
 			{

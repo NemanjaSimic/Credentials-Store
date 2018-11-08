@@ -64,7 +64,9 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="DateBaseContext.cs" />
+    <Compile Include="DatebaseContextHistory.cs" />
     <Compile Include="DBManager.cs" />
+    <Compile Include="PasswordHistoryModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

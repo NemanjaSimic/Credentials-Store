@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using System.ServiceModel;
+using System.ServiceModel.Security;
 using System.Text;
 using System.Threading.Tasks;
 using Contracts;
@@ -17,19 +18,43 @@ namespace Client
 		{
 			this.factory = CreateChannel();
 		}
-		public bool CreateAccount(string username, SecureString password)
+		public void CreateAccount(string username, SecureString password)
 		{
-			return factory.CreateAccount(username, password);
+			try
+			{
+				factory.CreateAccount(username, password);
+				Console.WriteLine("Account successfully created!");
+			}
+			catch (SecurityAccessDeniedException e)
+			{
+				Console.WriteLine("Error while trying to create account. {0}", e.Message);
+			}
 		}
 
-		public bool DeleteAccount(string username)
+		public void DeleteAccount(string username)
 		{
-			return factory.DeleteAccount(username);
+			try
+			{
+				factory.DeleteAccount(username);
+				Console.WriteLine("Account successfully deleted!");
+			}
+			catch (SecurityAccessDeniedException e)
+			{
+				Console.WriteLine("Error while trying to delete account. {0}", e.Message);
+			}
 		}
 
-		public bool ResetPassword(string username, SecureString password)
+		public void ResetPassword(string username, SecureString password)
 		{
-			return factory.ResetPassword(username, password);
+			try
+			{
+				factory.ResetPassword(username, password);
+				Console.WriteLine("Password successfully reset!");
+			}
+			catch (SecurityAccessDeniedException e)
+			{
+				Console.WriteLine("Error while trying to reset password. {0}", e.Message);
+			}
 		}
 	}
 }

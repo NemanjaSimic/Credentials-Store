@@ -5,29 +5,32 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Contracts
 {
     [DataContract]
     public class User
     {
+		public User(){	}
         public User(string username, int password)
         {
             Username = username;
             Password = password;
-            PasswordHistory = new Dictionary<int, int>();
-            PasswordHistory.Add(password, 1);
-            PasswordInitialized = DateTime.Now;
-            //period vazenja
-            //sadasnje vreme
+			PasswordHistory = new Dictionary<int, int>
+			{
+				{ password, 1 }
+			};
+			PasswordInitialized = DateTime.Now;
         }
         [DataMember]
         public String Username { get; set; }
         [DataMember]
         public int Password { get; set; }
-        [DataMember]
-        public Dictionary<int, int> PasswordHistory { get; set; }
-        [DataMember]
+		[DataMember]
+		[NotMapped]
+		public Dictionary<int, int> PasswordHistory { get; set; }
+		[DataMember]
         public DateTime PasswordInitialized { get; set; }
     }
 }

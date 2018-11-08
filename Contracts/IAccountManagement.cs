@@ -12,10 +12,13 @@ namespace Contracts
     public interface IAccountManagement
     {
         [OperationContract]
-        bool CreateAccount(string username, SecureString password);
+		[FaultContract(typeof(SecurityException))]
+        void CreateAccount(string username, SecureString password);
         [OperationContract]
-        bool DeleteAccount(string username);
+		[FaultContract(typeof(SecurityException))]
+		void DeleteAccount(string username);
         [OperationContract]
-        bool ResetPassword(string username, SecureString password);
+		[FaultContract(typeof(SecurityException))]
+		void ResetPassword(string username, SecureString password);
     }
 }

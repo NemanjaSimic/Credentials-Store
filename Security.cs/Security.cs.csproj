@@ -55,6 +55,10 @@
       <Project>{f40c0f99-dbfc-400d-8514-518c9d118079}</Project>
       <Name>Contracts</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Datebase\Datebase.csproj">
+      <Project>{0D567694-4250-46A8-965F-6A61BF9A5017}</Project>
+      <Name>Datebase</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

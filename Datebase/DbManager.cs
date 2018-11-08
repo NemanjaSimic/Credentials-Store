@@ -55,23 +55,6 @@ namespace Datebase
             return retVal;
         }
 
-		//public bool ResetPassword(User user, int newPass)
-		//{
-		//	bool retVal = false;
-		//	using (var dbContext = new DataBaseContext())
-		//	{
-		//		if (dbContext.Credentials.Contains(user))
-		//		{
-		//			dbContext.Credentials.Remove(user);
-		//			user.Password = newPass;
-		//			dbContext.Credentials.Add(user);
-		//			dbContext.SaveChanges();
-		//			retVal = true;
-		//		}
-		//	}
-  //          return retVal;
-  //      }
-
         public User GetUserByUsername(string username)
         {
             User retUser = null;
@@ -87,6 +70,22 @@ namespace Datebase
 			}
             return retUser;
         }
+
+		public int GetNumberOfPassRepeat(string username, int pass)
+		{
+			int number = 0;
+			using (var dbContext = new DataBaseContextHistory())
+			{
+				foreach (var item in dbContext.PasswordHistory)
+				{
+					if (item.Username.Equals(username) && item.Password == pass)
+					{
+						number++;
+					}
+				}
+			}
+			return number;
+		}
 
     }
 }
