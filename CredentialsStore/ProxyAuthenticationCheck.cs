@@ -16,9 +16,20 @@ namespace CredentialsStore
 		{
 			this.factory = CreateChannel();
 		}
-		public bool IsAuthenticated(string username)
+
+        public List<string> GetAllLoggedUsers()
+        {
+            return factory.GetAllLoggedUsers();
+        }
+
+        public bool IsAuthenticated(string username)
 		{
 			return factory.IsAuthenticated(username);
 		}
-	}
+
+        public void NotifyClientsAndLogOut(string username)
+        {
+            factory.NotifyClientsAndLogOut(username);
+        }
+    }
 }

@@ -14,6 +14,11 @@ namespace Contracts
 		[OperationContract]
 		[FaultContract(typeof(SecurityException))]
 		bool IsAuthenticated(string username);
-		
-	}
+        [OperationContract]
+        [FaultContract(typeof(SecurityException))]
+        void NotifyClientsAndLogOut(string username);
+        [OperationContract]
+        List<string> GetAllLoggedUsers();        
+
+    }
 }

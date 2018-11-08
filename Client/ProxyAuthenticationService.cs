@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,12 +20,27 @@ namespace Client
 
 		public void Login(string username, int password)
 		{
-			throw new NotImplementedException();
+            try
+            {
+                factory.Login(username, password);
+            }
+            catch(SecurityException ex)
+            {
+                throw ex;
+            }
 		}
 
 		public void Logout(string username)
 		{
-			throw new NotImplementedException();
+            try
+            {
+                factory.Logout(username);
+
+            }
+            catch(SecurityException ex)
+            {
+                throw ex;
+            }
 		}
 	}
 }

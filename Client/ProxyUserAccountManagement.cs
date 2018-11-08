@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +16,16 @@ namespace Client
 		{
 			this.factory = CreateChannel();
 		}
-		public bool ResetPassword()
+		public void ResetPassword(string username, SecureString oldPassword, SecureString newPassword)
 		{
-			return factory.ResetPassword();
+            try
+            {
+                factory.ResetPassword(username, oldPassword, newPassword);
+            }
+            catch(SecurityException ex)
+            {
+                throw ex;
+            }
 		}
 	}
 }

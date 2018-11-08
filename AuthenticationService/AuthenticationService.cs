@@ -53,5 +53,23 @@ namespace AuthenticationService
 		{
 			return loggedUsers.ContainsKey(username);
 		}
-	}
+        public void NotifyClientsAndLogOut(string username)
+        {
+            if (loggedUsers.ContainsKey(username))
+            {
+                loggedUsers[username].NotifyClient();
+                Logout(username);
+            }
+            else
+            {
+                SecurityException ex = new SecurityException("Client is already logged out");
+                throw ex;
+            }
+        }
+
+        public List<string> GetAllLoggedUsers()
+        {
+            return loggedUsers.Keys.ToList();
+        }
+    }
 }

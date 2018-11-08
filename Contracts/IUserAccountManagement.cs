@@ -13,6 +13,6 @@ namespace Contracts
     {
         [OperationContract]
 		[FaultContract(typeof(SecurityException))]
-		bool ResetPassword(SecureString oldPassword,SecureString newPassword);
+		void ResetPassword(string username,SecureString oldPassword,SecureString newPassword);
     }
 }

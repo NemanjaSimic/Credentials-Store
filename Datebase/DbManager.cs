@@ -70,6 +70,20 @@ namespace Datebase
 			}
             return retUser;
         }
+        public bool AddPasswordToHistory(PasswordHistoryModel passModel)
+        {
+            bool retVal = false;
+            using(var dbContext = new DataBaseContextHistory())
+            {
+                if (!dbContext.PasswordHistory.Contains(passModel))
+                {
+                    dbContext.PasswordHistory.Add(passModel);
+                    retVal = true;
+                    dbContext.SaveChanges();
+                }
+            }
+            return retVal;
+        }
 
 		public int GetNumberOfPassRepeat(string username, int pass)
 		{
@@ -86,6 +100,22 @@ namespace Datebase
 			}
 			return number;
 		}
+        //public bool DoesPasswordExistInPasswordHistory(string username, int pass)
+        //{
+        //    bool retVal = false;
+        //    using (var dbContext = new DataBaseContextHistory())
+        //    {
+        //        foreach (var item in dbContext.PasswordHistory)
+        //        {
+        //            if (item.Username.Equals(username) && item.Password.Equals(pass))
+        //            {
+        //                retVal = true;
+        //                break;
+        //            }
+        //        }
+        //    }
+        //    return retVal;
+        //}
 
     }
 }

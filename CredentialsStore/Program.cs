@@ -8,14 +8,21 @@ using Contracts;
 using System.ServiceModel.Description;
 using System.IdentityModel.Policy;
 using Security.cs;
+using System.Threading;
+using Datebase;
+using System.Security;
+using Security;
 
 namespace CredentialsStore
 {
     class Program
     {
+
         static void Main(string[] args)
         {
-			ServiceHost hostAccountManagement = new ServiceHost(typeof(AccountManagement));
+            Thread thread1 = new Thread(PasswordAlarm);
+
+            ServiceHost hostAccountManagement = new ServiceHost(typeof(AccountManagement));
 			OpenAccountManagementHost(hostAccountManagement);
 
 			ServiceHost hostUserAccountManagement = new ServiceHost(typeof(UserAccountManagement));
@@ -24,8 +31,9 @@ namespace CredentialsStore
 			ServiceHost hostCredentialCheck = new ServiceHost(typeof(CredentialCheck));
 			OpenCredentialCheckHost(hostCredentialCheck);
 
+            thread1.Start();
 
-			Console.ReadLine();
+            Console.ReadLine();
 
 			hostAccountManagement.Close();
         }
@@ -75,5 +83,32 @@ namespace CredentialsStore
 			host.AddServiceEndpoint(typeof(ICredentialCheck), binding, address);		
 			Console.WriteLine("CredentialsStore CredetialCheck service opened...");
 		}
+        static void PasswordAlarm()
+        {
+            NetTcpBinding binding = new NetTcpBinding();
+            string address = "net.tcp://localhost:9995/AuthenticationService";
+            while (true)
+            {
+                using (ProxyAuthenticationCheck proxy = new ProxyAuthenticationCheck(binding, new EndpointAddress(new Uri(address))))
+                {
+                    try
+                    {
+                        List<string> loggedUsers = proxy.GetAllLoggedUsers();
+                        foreach(string user in loggedUsers)
+                        {
+                            if (PasswordPolicy.IsPasswordOut(DBManager.Instance.GetUserByUsername(user)))
+                            {
+                                proxy.NotifyClientsAndLogOut(user);
+                            }
+                        }
+                    }
+                    catch (SecurityException ex)
+                    {
+                        throw ex;
+                    }
+                }
+                Thread.Sleep(2250);
+            }
+        }
 	}
 }
