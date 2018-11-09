@@ -21,10 +21,11 @@ namespace Client
             try
             {
                 factory.ResetPassword(username, oldPassword, newPassword);
+				Console.WriteLine("User reset password successfully!");
             }
             catch(SecurityException ex)
             {
-                throw ex;
+				Console.WriteLine("Error while trying to reset password.{0}", ex.Message);
             }
 		}
 	}

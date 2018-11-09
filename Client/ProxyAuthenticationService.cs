@@ -23,10 +23,11 @@ namespace Client
             try
             {
                 factory.Login(username, password);
+				Console.WriteLine("User logged in successfully!");
             }
             catch(SecurityException ex)
             {
-                throw ex;
+				Console.WriteLine("Error while trying to login.{0}",ex.Message);
             }
 		}
 
@@ -34,13 +35,13 @@ namespace Client
 		{
             try
             {
-                factory.Logout(username);
-
+				factory.Logout(username);
+				Console.WriteLine("User logged out successfully!");
             }
             catch(SecurityException ex)
             {
-                throw ex;
-            }
+				Console.WriteLine("Error while trying to logout.{0}", ex.Message);
+			}
 		}
 	}
 }

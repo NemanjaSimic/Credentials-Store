@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Contracts;
+using System;
 using System.Security;
 using System.Security.Principal;
 using System.ServiceModel;
+using System.ServiceModel.Security;
 
 namespace Client
 {
@@ -32,13 +34,21 @@ namespace Client
 							switch (AdminMenu())
 							{
 								case '1':
-									//proxy.CreateAccount();
+									Console.WriteLine("Enter username:");
+									string username = Console.ReadLine();
+									SecureString password = EnterPassword();
+									proxy.CreateAccount(username,password);
 									break;
 								case '2':
-									//proxy.DeleteAccount();
+									Console.WriteLine("Enter username:");
+									string usernameForDelete = Console.ReadLine();
+									proxy.DeleteAccount(usernameForDelete);
 									break;
 								case '3':
-									//proxy.ResetPassword();
+									Console.WriteLine("Enter username:");
+									string usernameForReset = Console.ReadLine();
+									SecureString passwordForReset = EnterPassword();
+									proxy.ResetPassword(usernameForReset,passwordForReset);
 									break;
 								default:
 									exit = true;
@@ -65,13 +75,30 @@ namespace Client
 								switch (RegularUserMenu())
 								{
 									case '1':
-										//proxyAuthSrvc.Login();
+										Console.WriteLine("Enter your username:");
+										string username = Console.ReadLine();
+
+										SecureString password = EnterPassword();
+
+										proxyAuthSrvc.Login(username,password.GetHashCode());
 										break;
 									case '2':
-										//proxyAuthSrvc.Logout();
+										Console.WriteLine("Enter your username:");
+										string usernameForLogout = Console.ReadLine();
+
+										proxyAuthSrvc.Logout(usernameForLogout);
 										break;
 									case '3':
-										//proxyAccMngmnt.ResetPassword();
+										Console.WriteLine("Enter your username:");
+										string usernameForReset = Console.ReadLine();
+
+										Console.WriteLine("First we need your current password");
+										SecureString oldPassword = EnterPassword();
+
+										Console.WriteLine("Now you can pick new password");
+										SecureString newPassword = EnterPassword();
+
+										proxyAccMngmnt.ResetPassword(usernameForReset,oldPassword,newPassword);
 										break;
 									default:
 										exit = true;
@@ -98,7 +125,6 @@ namespace Client
 		//	}
 		//	return retVal;
 		//}
-
 		static char AdminMenu()
 		{
 			char answ;
@@ -136,6 +162,51 @@ namespace Client
 			binding.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
 			binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
 			return binding;
+		}
+
+		static SecureString EnterPassword()
+		{
+			SecureString securePwd = new SecureString();
+			ConsoleKeyInfo key;
+
+			Console.Write("Enter password: ");
+			do
+			{
+				key = Console.ReadKey(true);
+
+				// Append the character to the password.
+				securePwd.AppendChar(key.KeyChar);
+				int hash = securePwd.GetHashCode();
+				Console.Write("*");
+
+				// Exit if Enter key is pressed.
+			} while (key.Key != ConsoleKey.Enter);
+			return securePwd;
+		}
+
+		static void EnterCredentials(string username, SecureString password)
+		{
+			Console.WriteLine("Enter your username:");
+			username = Console.ReadLine();
+			password = EnterPassword();
+		}
+
+		public void CreateAccount()
+		{
+			Console.WriteLine("Enter username:");
+			string username = Console.ReadLine();
+			SecureString password = EnterPassword();
+
+		}
+
+		public void DeleteAccount(string username)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ResetPassword(string username, SecureString password)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

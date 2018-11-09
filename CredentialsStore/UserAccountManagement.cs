@@ -26,7 +26,6 @@ namespace CredentialsStore
 
                             if (PasswordPolicy.CanResetPassword(username, newPass))
                             {
-                                //uvecati staru za 1
                                 if (!DBManager.Instance.DeleteUser(user))
                                 {
                                     SecurityException ex = new SecurityException("There was a conflict. Someone else is changing informations about this user.Trying to make things right...");
@@ -41,7 +40,7 @@ namespace CredentialsStore
                             }
                             else
                             {
-                                SecurityException ex = new SecurityException("These password used to many times");
+                                SecurityException ex = new SecurityException("This password has been used too many times.");
                                 throw ex;
                             }
 
@@ -54,7 +53,7 @@ namespace CredentialsStore
                 }
                 else
                 {
-                    SecurityException ex = new SecurityException("Bad old password");
+                    SecurityException ex = new SecurityException("Invalid password.");
                     throw ex;
                 }
             }

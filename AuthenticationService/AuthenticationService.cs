@@ -62,7 +62,7 @@ namespace AuthenticationService
             }
             else
             {
-                SecurityException ex = new SecurityException("Client is already logged out");
+                SecurityException ex = new SecurityException("Client is already logged out.");
                 throw ex;
             }
         }

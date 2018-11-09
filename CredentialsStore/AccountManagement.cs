@@ -44,7 +44,7 @@ namespace CredentialsStore
 			}
 			else
             {
-				SecurityException ex = new SecurityException("User does not exist or is already deleted by other admin");
+				SecurityException ex = new SecurityException("User does not exist or is already deleted by other admin.");
 				throw ex;
 			}
         }

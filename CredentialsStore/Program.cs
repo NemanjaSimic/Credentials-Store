@@ -31,7 +31,7 @@ namespace CredentialsStore
 			ServiceHost hostCredentialCheck = new ServiceHost(typeof(CredentialCheck));
 			OpenCredentialCheckHost(hostCredentialCheck);
 
-            thread1.Start();
+           // thread1.Start();
 
             Console.ReadLine();
 
@@ -87,11 +87,12 @@ namespace CredentialsStore
         {
             NetTcpBinding binding = new NetTcpBinding();
             string address = "net.tcp://localhost:9995/AuthenticationService";
-            while (true)
-            {
+            
                 using (ProxyAuthenticationCheck proxy = new ProxyAuthenticationCheck(binding, new EndpointAddress(new Uri(address))))
                 {
-                    try
+				while (true)
+				{
+					try
                     {
                         List<string> loggedUsers = proxy.GetAllLoggedUsers();
                         foreach(string user in loggedUsers)
@@ -106,9 +107,10 @@ namespace CredentialsStore
                     {
                         throw ex;
                     }
-                }
-                Thread.Sleep(2250);
-            }
+					Thread.Sleep(2250);
+				}
+			}
+            
         }
 	}
 }
