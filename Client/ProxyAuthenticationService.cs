@@ -5,15 +5,17 @@ using System.Security;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.ServiceModel.Security;
 using Contracts;
+using AuthenticationService;
 
 
 namespace Client
 {
-	public class ProxyAuthenticationService : ChannelFactory<IAuthenticationService>, IAuthenticationService
+	public class ProxyAuthenticationService : DuplexClientBase<IAuthenticationService>, IAuthenticationService
 	{
 		IAuthenticationService factory;
-		public ProxyAuthenticationService(NetTcpBinding binding,EndpointAddress address) : base(binding,address)
+		public ProxyAuthenticationService(NetTcpBinding binding,EndpointAddress address) : base(new LogoutNotification(),binding,address)
 		{
 			this.factory = CreateChannel();
 		}
@@ -25,7 +27,7 @@ namespace Client
                 factory.Login(username, password);
 				Console.WriteLine("User logged in successfully!");
             }
-            catch(SecurityException ex)
+            catch(SecurityAccessDeniedException ex)
             {
 				Console.WriteLine("Error while trying to login.{0}",ex.Message);
             }
@@ -38,7 +40,7 @@ namespace Client
 				factory.Logout(username);
 				Console.WriteLine("User logged out successfully!");
             }
-            catch(SecurityException ex)
+            catch(SecurityAccessDeniedException ex)
             {
 				Console.WriteLine("Error while trying to logout.{0}", ex.Message);
 			}

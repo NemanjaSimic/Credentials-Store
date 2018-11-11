@@ -1,0 +1,2 @@
+RegularUser-ResetPassword,Login,Logout,AccountAccess
+Administrators-CreateAccount,DeleteAccount,ResetUserPassword,Administrate

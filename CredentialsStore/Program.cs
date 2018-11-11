@@ -49,7 +49,7 @@ namespace CredentialsStore
 		static void OpenAccountManagementHost(ServiceHost host)
 		{
 			NetTcpBinding binding = MakeBinding();
-			string address = "net.tcp://localhost:9999/AccountManagement";
+			string address = "net.tcp://localhost:5555/AccountManagement";
 		
 			host.AddServiceEndpoint(typeof(IAccountManagement), binding, address);
 			host.Description.Behaviors.Remove(typeof(ServiceDebugBehavior));
@@ -62,6 +62,7 @@ namespace CredentialsStore
 			};
 			host.Authorization.ExternalAuthorizationPolicies = policies.AsReadOnly();
 			host.Authorization.PrincipalPermissionMode = PrincipalPermissionMode.Custom;
+			host.Open();
 			Console.WriteLine("CredentialsStore AccountManagement service opened...");
 		}
 
@@ -73,6 +74,7 @@ namespace CredentialsStore
 			host.AddServiceEndpoint(typeof(IUserAccountManagement), binding, address);
 			host.Description.Behaviors.Remove(typeof(ServiceDebugBehavior));
 			host.Description.Behaviors.Add(new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true });
+			host.Open();
 			Console.WriteLine("CredentialsStore UserAccountManagement service opened...");
 		}
 
@@ -80,7 +82,8 @@ namespace CredentialsStore
 		{
 			NetTcpBinding binding = MakeBinding();
 			string address = "net.tcp://localhost:9997/CredentialCheck";
-			host.AddServiceEndpoint(typeof(ICredentialCheck), binding, address);		
+			host.AddServiceEndpoint(typeof(ICredentialCheck), binding, address);
+			host.Open();
 			Console.WriteLine("CredentialsStore CredetialCheck service opened...");
 		}
         static void PasswordAlarm()

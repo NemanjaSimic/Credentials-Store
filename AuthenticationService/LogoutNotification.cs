@@ -7,7 +7,7 @@ using Contracts;
 
 namespace AuthenticationService
 {
-    class LogoutNotification : ILogoutNotification
+    public class LogoutNotification : ILogoutNotification
     {
         public void NotifyClient()
         {

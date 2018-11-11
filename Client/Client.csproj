@@ -53,6 +53,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AuthenticationService\AuthenticationService.csproj">
+      <Project>{153bd1b1-4d6d-49b5-a10d-5736275ac8b1}</Project>
+      <Name>AuthenticationService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Contracts\Contracts.csproj">
       <Project>{f40c0f99-dbfc-400d-8514-518c9d118079}</Project>
       <Name>Contracts</Name>

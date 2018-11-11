@@ -10,6 +10,7 @@ using System.ServiceModel;
 
 namespace AuthenticationService
 {
+	[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
 	public class AuthenticationService : IAuthenticationService, IAuthenticationCheck
 	{
 		private Dictionary<string, ILogoutNotification> loggedUsers = new Dictionary<string, ILogoutNotification>();

@@ -18,3 +18,12 @@ C:\Users\Simic\Desktop\Credentials-Store\Client\obj\Debug\Client.csproj.CoreComp
 C:\Users\Simic\Desktop\Credentials-Store\Client\obj\Debug\Client.csproj.CopyComplete
 C:\Users\Simic\Desktop\Credentials-Store\Client\obj\Debug\Client.exe
 C:\Users\Simic\Desktop\Credentials-Store\Client\obj\Debug\Client.pdb
+C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\AuthenticationService.exe
+C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\Security.cs.dll
+C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\Datebase.dll
+C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\EntityFramework.dll
+C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\AuthenticationService.pdb
+C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\Security.cs.pdb
+C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\Datebase.pdb
+C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\Datebase.dll.config
+C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\EntityFramework.xml

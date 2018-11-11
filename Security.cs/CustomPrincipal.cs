@@ -36,7 +36,15 @@ namespace Security.cs
 
 		public bool IsInRole(string role)
 		{
-			return Permissions.Contains(role);
+			bool retVal = false;
+			foreach (var item in Permissions)
+			{
+				if (item.Equals(role))
+				{
+					retVal = true;
+				}
+			}
+			return retVal;
 		}
 	}
 }

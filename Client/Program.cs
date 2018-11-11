@@ -25,7 +25,7 @@ namespace Client
 				if (op == '1')
 				{
 					NetTcpBinding binding = MakeBinding();
-					string address = "net.tcp://localhost:9999/AccountManagement";
+					string address = "net.tcp://localhost:5555/AccountManagement";
 					using (ProxyAccountManagement proxy = new ProxyAccountManagement(binding, new EndpointAddress(new Uri(address))))
 					{
 						bool exit = false;
@@ -37,7 +37,13 @@ namespace Client
 									Console.WriteLine("Enter username:");
 									string username = Console.ReadLine();
 									SecureString password = EnterPassword();
-									proxy.CreateAccount(username,password);
+									
+									
+										proxy.CreateAccount(username,password);
+									
+						
+										
+								
 									break;
 								case '2':
 									Console.WriteLine("Enter username:");
