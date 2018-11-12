@@ -88,8 +88,10 @@ namespace Client
 										string username = Console.ReadLine();
 
 										SecureString password = EnterPassword();
-
-										proxyAuthSrvc.Login(username,password.GetHashCode());
+										byte[] data = System.Text.Encoding.ASCII.GetBytes(password.ToString());
+										data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
+										string hash = System.Text.Encoding.ASCII.GetString(data);
+										proxyAuthSrvc.Login(username,hash);
 										break;
 									case '2':
 										ClearConsoleBuffer();

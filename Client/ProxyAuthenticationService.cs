@@ -20,7 +20,7 @@ namespace Client
 			this.factory = CreateChannel();
 		}
 
-		public void Login(string username, int password)
+		public void Login(string username, string password)
 		{
 			try
 			{

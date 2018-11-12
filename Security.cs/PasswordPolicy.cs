@@ -86,7 +86,7 @@ namespace Security
             return retVal;
         }
 
-        public static bool CanResetPassword(string username, int password)
+        public static bool CanResetPassword(string username, string password)
         {
 			LoadRules();
             bool retVal = false;

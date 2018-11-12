@@ -32,7 +32,8 @@ namespace Datebase
 			{
 				if (!UserExists(newUser))
 				{
-					dbContext.Credentials.Add(newUser);
+					
+					dbContext.CredentialsStore.Add(newUser);
 					retVal = true;
 					dbContext.SaveChanges();
 				}
@@ -46,7 +47,7 @@ namespace Datebase
 			bool retVal = false;
 			using (var dbContext = new DataBaseContext())
 			{			
-				foreach (var item in dbContext.Credentials)
+				foreach (var item in dbContext.CredentialsStore)
 				{
 					if (item.Username.Equals(user.Username))
 					{
@@ -64,9 +65,10 @@ namespace Datebase
             bool retVal = false;
 			using (var dbContext = new DataBaseContext())
 			{
-				if (!UserExists(user))
+				if (UserExists(user))
 				{
-					dbContext.Credentials.Remove(user);
+					var userDel = dbContext.CredentialsStore.Single(u => u.Username.Equals(user.Username));
+					dbContext.CredentialsStore.Remove(userDel);
 					retVal = true;
 					dbContext.SaveChanges();
 				}
@@ -79,7 +81,7 @@ namespace Datebase
             User retUser = null;
 			using (var dbContext = new DataBaseContext())
 			{
-				foreach (User user in dbContext.Credentials)
+				foreach (User user in dbContext.CredentialsStore)
 				{
 					if (user.Username.Equals(username))
 					{
@@ -101,14 +103,14 @@ namespace Datebase
             return retVal;
         }
 
-		public int GetNumberOfPassRepeat(string username, int pass)
+		public int GetNumberOfPassRepeat(string username, string pass)
 		{
 			int number = 0;
 			using (var dbContext = new DataBaseContextHistory())
 			{
 				foreach (var item in dbContext.PasswordHistory)
 				{
-					if (item.Username.Equals(username) && item.Password == pass)
+					if (item.Username.Equals(username) && item.Password.Equals(pass))
 					{
 						number++;
 					}

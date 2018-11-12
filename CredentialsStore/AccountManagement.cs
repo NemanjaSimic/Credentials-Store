@@ -17,7 +17,10 @@ namespace CredentialsStore
         {
             if (PasswordPolicy.ValidatePassword(password))
             {
-                if (DBManager.Instance.AddUser(new User(username, password.GetHashCode())))
+				byte[] data = System.Text.Encoding.ASCII.GetBytes(password.ToString());
+				data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
+				string hash = System.Text.Encoding.ASCII.GetString(data);
+				if (DBManager.Instance.AddUser(new User(username, hash)))
                 {
 					Console.WriteLine("User {0} successfully created!",username);
                 }
@@ -57,9 +60,11 @@ namespace CredentialsStore
 			{
                 if (PasswordPolicy.ValidatePassword(newPassword))
                 {
-                    int newPass = newPassword.GetHashCode();
+					byte[] data = System.Text.Encoding.ASCII.GetBytes(newPassword.ToString());
+					data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
+					String hash = System.Text.Encoding.ASCII.GetString(data);
 
-                    if (PasswordPolicy.CanResetPassword(username, newPass))
+					if (PasswordPolicy.CanResetPassword(username,hash))
                     {
                         //uvecati staru za 1
                         if (!DBManager.Instance.DeleteUser(user))
@@ -67,10 +72,10 @@ namespace CredentialsStore
                             SecurityException ex = new SecurityException("There was a conflict. Someone else is changing informations about this user.Trying to make things right...");
                             throw ex;
                         }
-                        user.Password = newPass;
+                        user.Password = hash;
                         PasswordHistoryModel model = new PasswordHistoryModel();
                         model.Username = user.Username;
-                        model.Password = user.Password;
+						model.Password = hash;
                         DBManager.Instance.AddPasswordToHistory(model);
                         if (!DBManager.Instance.AddUser(user))
                         {

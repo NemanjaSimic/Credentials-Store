@@ -17,7 +17,7 @@ namespace AuthenticationService
 		private NetTcpBinding binding = new NetTcpBinding();
 		private string address = "net.tcp://localhost:9997/CredentialCheck";
 
-		public void Login(string username, int password)
+		public void Login(string username, string password)
 		{
 			using (ProxyCredentialsStore proxy = new ProxyCredentialsStore(binding, new EndpointAddress(new Uri(address))))
 			{

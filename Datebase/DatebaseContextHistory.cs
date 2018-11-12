@@ -12,7 +12,7 @@ namespace Datebase
 	{
 		public DataBaseContextHistory() : base("PasswordHistory")
 		{
-			//Database.SetInitializer(new MigrateDatabaseToLatestVersion<DatabaseContext, Config>());
+			Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataBaseContext, Config>());
 
 		}
 

@@ -13,6 +13,6 @@ namespace Contracts
     {
         [OperationContract]
 		[FaultContract(typeof(SecurityException))]
-        void ValidateCredential(string username, int password);
+        void ValidateCredential(string username, string password);
     }
 }

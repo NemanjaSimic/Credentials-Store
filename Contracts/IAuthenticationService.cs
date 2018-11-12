@@ -13,7 +13,7 @@ namespace Contracts
 	{
 		[OperationContract]
 		[FaultContract(typeof(SecurityException))]
-		void Login(string username,int password);
+		void Login(string username,string password);
 		[OperationContract]
 		[FaultContract(typeof(SecurityException))]
 		void Logout(string username);

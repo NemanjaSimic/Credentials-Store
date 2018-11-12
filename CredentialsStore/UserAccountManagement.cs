@@ -16,22 +16,24 @@ namespace CredentialsStore
 		public void ResetPassword(string username, SecureString oldPassword, SecureString newPassword)
 		{
             User user = DBManager.Instance.GetUserByUsername(username);
-            int oldPass = oldPassword.GetHashCode();
+            int oldPass = oldPassword.ToString().GetHashCode();
             if (user != null)
             {
                 if(user.Password.Equals(oldPass)){
                     if (PasswordPolicy.ValidatePassword(newPassword))
                     {
-                        int newPass = newPassword.GetHashCode();
+						byte[] data = System.Text.Encoding.ASCII.GetBytes(newPassword.ToString());
+						data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
+						String hash = System.Text.Encoding.ASCII.GetString(data);
 
-                            if (PasswordPolicy.CanResetPassword(username, newPass))
+						if (PasswordPolicy.CanResetPassword(username, hash))
                             {
                                 if (!DBManager.Instance.DeleteUser(user))
                                 {
                                     SecurityException ex = new SecurityException("There was a conflict. Someone else is changing informations about this user.Trying to make things right...");
                                     throw ex;
                                 }
-                                user.Password = newPass;
+                                user.Password = hash;
                                 if (!DBManager.Instance.AddUser(user))
                                 {
                                     SecurityException ex = new SecurityException("There was a conflict. Someone else is changing informations about this user.");

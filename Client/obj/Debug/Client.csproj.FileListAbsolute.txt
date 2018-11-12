@@ -30,3 +30,5 @@ C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\EntityFramework.xml
 C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\EntityFramework.SqlServer.dll
 C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\AuthenticationService.exe.config
 C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\Database.mdf
+C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\Database_log.ldf

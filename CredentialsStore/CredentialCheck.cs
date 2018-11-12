@@ -12,13 +12,13 @@ namespace CredentialsStore
 {
     class CredentialCheck : ICredentialCheck
     {
-        public void ValidateCredential(string username, int password)
+        public void ValidateCredential(string username, string password)
         {
             
             User user = DBManager.Instance.GetUserByUsername(username);
             if(user != null)
             {
-                if(user.Password == password)
+                if(user.Password.Equals(password))
                 {
                    // Console.WriteLine("User ulogovan");
                 }

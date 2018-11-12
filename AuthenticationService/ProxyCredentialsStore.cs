@@ -17,7 +17,7 @@ namespace AuthenticationService
 			factory = this.CreateChannel();
 		}
 
-		public void ValidateCredential(string username, int password)
+		public void ValidateCredential(string username, string password)
 		{
 			try
 			{

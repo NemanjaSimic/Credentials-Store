@@ -14,7 +14,7 @@ namespace Contracts
     public class User
     {
 		public User(){	}
-        public User(string username, int password)
+        public User(string username, string password)
         {
             Username = username;
             Password = password;
@@ -22,9 +22,9 @@ namespace Contracts
         }
         [DataMember]
 		[Key]
-        public String Username { get; set; }
+        public string Username { get; set; }
         [DataMember]
-        public int Password { get; set; }
+        public string Password { get; set; }
    
 		[DataMember]
         public DateTime PasswordInitialized { get; set; }
