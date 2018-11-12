@@ -22,15 +22,19 @@ namespace Client
 
 		public void Login(string username, int password)
 		{
-            try
-            {
-                factory.Login(username, password);
+			try
+			{
+				factory.Login(username, password);
 				Console.WriteLine("User logged in successfully!");
-            }
-            catch(SecurityAccessDeniedException ex)
-            {
-				Console.WriteLine("Error while trying to login.{0}",ex.Message);
-            }
+			}
+			catch (SecurityAccessDeniedException ex)
+			{
+				Console.WriteLine("Error while trying to login.{0}", ex.Message);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+			}
 		}
 
 		public void Logout(string username)

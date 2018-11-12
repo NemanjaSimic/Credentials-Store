@@ -30,22 +30,41 @@ namespace Datebase
             bool retVal = false;
 			using (var dbContext = new DataBaseContext())
 			{
-				if (!dbContext.Credentials.Contains(newUser))
+				if (!UserExists(newUser))
 				{
 					dbContext.Credentials.Add(newUser);
 					retVal = true;
 					dbContext.SaveChanges();
 				}
+
 			}
             return retVal;
         }
+
+		public bool UserExists(User user)
+		{
+			bool retVal = false;
+			using (var dbContext = new DataBaseContext())
+			{			
+				foreach (var item in dbContext.Credentials)
+				{
+					if (item.Username.Equals(user.Username))
+					{
+						retVal = true;
+					}
+				}
+				
+
+			}
+			return retVal;
+		}
 
         public bool DeleteUser(User user)
         {
             bool retVal = false;
 			using (var dbContext = new DataBaseContext())
 			{
-				if (dbContext.Credentials.Contains(user))
+				if (!UserExists(user))
 				{
 					dbContext.Credentials.Remove(user);
 					retVal = true;
@@ -75,12 +94,9 @@ namespace Datebase
             bool retVal = false;
             using(var dbContext = new DataBaseContextHistory())
             {
-                if (!dbContext.PasswordHistory.Contains(passModel))
-                {
                     dbContext.PasswordHistory.Add(passModel);
                     retVal = true;
                     dbContext.SaveChanges();
-                }
             }
             return retVal;
         }
@@ -100,22 +116,22 @@ namespace Datebase
 			}
 			return number;
 		}
-        //public bool DoesPasswordExistInPasswordHistory(string username, int pass)
-        //{
-        //    bool retVal = false;
-        //    using (var dbContext = new DataBaseContextHistory())
-        //    {
-        //        foreach (var item in dbContext.PasswordHistory)
-        //        {
-        //            if (item.Username.Equals(username) && item.Password.Equals(pass))
-        //            {
-        //                retVal = true;
-        //                break;
-        //            }
-        //        }
-        //    }
-        //    return retVal;
-        //}
+		//public bool DoesPasswordExistInPasswordHistory(string username, int pass)
+		//{
+		//	bool retVal = false;
+		//	using (var dbContext = new DataBaseContextHistory())
+		//	{
+		//		foreach (var item in dbContext.PasswordHistory)
+		//		{
+		//			if (item.Username.Equals(username) && item.Password.Equals(pass))
+		//			{
+		//				retVal = true;
+		//				break;
+		//			}
+		//		}
+		//	}
+		//	return retVal;
+		//}
 
-    }
+	}
 }

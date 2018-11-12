@@ -30,7 +30,8 @@ namespace AuthenticationService
 				}
 				catch (SecurityException ex)
 				{
-					throw ex;
+					SecurityException newEx = new SecurityException(ex.Message);
+					throw newEx;
 				}
 			}
             

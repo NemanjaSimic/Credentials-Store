@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Contracts
 {
@@ -20,6 +21,7 @@ namespace Contracts
 			PasswordInitialized = DateTime.Now;
         }
         [DataMember]
+		[Key]
         public String Username { get; set; }
         [DataMember]
         public int Password { get; set; }

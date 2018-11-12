@@ -16,6 +16,7 @@ namespace Client
 				char op;
 				do
 				{
+					//Console.Clear();
 					Console.WriteLine("Connect to service like:");
 					Console.WriteLine("1.Admin");
 					Console.WriteLine("2.Regular user");
@@ -34,23 +35,23 @@ namespace Client
 							switch (AdminMenu())
 							{
 								case '1':
+									//Console.Clear();
+									ClearConsoleBuffer();
 									Console.WriteLine("Enter username:");
 									string username = Console.ReadLine();
 									SecureString password = EnterPassword();
-									
-									
-										proxy.CreateAccount(username,password);
-									
-						
-										
-								
+									proxy.CreateAccount(username,password);							
 									break;
 								case '2':
+									//Console.Clear();
+									ClearConsoleBuffer();
 									Console.WriteLine("Enter username:");
 									string usernameForDelete = Console.ReadLine();
 									proxy.DeleteAccount(usernameForDelete);
 									break;
 								case '3':
+									//Console.Clear();
+									ClearConsoleBuffer();
 									Console.WriteLine("Enter username:");
 									string usernameForReset = Console.ReadLine();
 									SecureString passwordForReset = EnterPassword();
@@ -65,6 +66,7 @@ namespace Client
 				}
 				else
 				{
+					ClearConsoleBuffer();
 					NetTcpBinding bindingForAuthenticationService = MakeBinding();
 					string addressForAuthenticationService = "net.tcp://localhost:9996/AuthenticationService";
 					using (ProxyAuthenticationService proxyAuthSrvc = new ProxyAuthenticationService(bindingForAuthenticationService, new EndpointAddress(new Uri(addressForAuthenticationService))))
@@ -81,6 +83,7 @@ namespace Client
 								switch (RegularUserMenu())
 								{
 									case '1':
+										ClearConsoleBuffer();
 										Console.WriteLine("Enter your username:");
 										string username = Console.ReadLine();
 
@@ -89,12 +92,16 @@ namespace Client
 										proxyAuthSrvc.Login(username,password.GetHashCode());
 										break;
 									case '2':
+										ClearConsoleBuffer();
+
 										Console.WriteLine("Enter your username:");
 										string usernameForLogout = Console.ReadLine();
 
 										proxyAuthSrvc.Logout(usernameForLogout);
 										break;
 									case '3':
+										ClearConsoleBuffer();
+
 										Console.WriteLine("Enter your username:");
 										string usernameForReset = Console.ReadLine();
 
@@ -136,12 +143,16 @@ namespace Client
 			char answ;
 			do
 			{
+				//Console.Clear();
+				ClearConsoleBuffer();
 				Console.WriteLine("Meni:");
 				Console.WriteLine("1.Create Account");
 				Console.WriteLine("2.Delete Account");
 				Console.WriteLine("3.Reset password");
 				Console.WriteLine("4.Exit");
 				answ = (char)Console.Read();
+				
+
 			} while (answ != '1' && answ != '2' && answ != '3' && answ != '4');
 			return answ;
 		}
@@ -151,6 +162,8 @@ namespace Client
 			char answ;
 			do
 			{
+				//Console.Clear();
+				ClearConsoleBuffer();
 				Console.WriteLine("Meni:");
 				Console.WriteLine("1.Log in");
 				Console.WriteLine("2.Log out");
@@ -173,20 +186,23 @@ namespace Client
 		static SecureString EnterPassword()
 		{
 			SecureString securePwd = new SecureString();
-			ConsoleKeyInfo key;
-
+			ClearConsoleBuffer();
 			Console.Write("Enter password: ");
-			do
+			ConsoleKeyInfo key = Console.ReadKey(true);
+			securePwd.AppendChar(key.KeyChar);
+			int hash = securePwd.GetHashCode();
+			Console.Write("*");
+			while (key.Key != ConsoleKey.Enter)
 			{
 				key = Console.ReadKey(true);
 
 				// Append the character to the password.
 				securePwd.AppendChar(key.KeyChar);
-				int hash = securePwd.GetHashCode();
+				hash = securePwd.GetHashCode();
 				Console.Write("*");
 
 				// Exit if Enter key is pressed.
-			} while (key.Key != ConsoleKey.Enter);
+			} 
 			return securePwd;
 		}
 
@@ -213,6 +229,12 @@ namespace Client
 		public void ResetPassword(string username, SecureString password)
 		{
 			throw new NotImplementedException();
+		}
+
+		static void ClearConsoleBuffer()
+		{
+			while (Console.In.Peek() != -1)
+				Console.In.Read();
 		}
 	}
 }

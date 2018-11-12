@@ -61,14 +61,26 @@ namespace Security
 
 			if (complexPass)
 			{
-				string patternPassword = @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,8}$";
 				if (!string.IsNullOrEmpty(password.ToString()))
 				{
-					if (!Regex.IsMatch(password.ToString(), patternPassword))
-					{
+					if (password.ToString().Length < 7)
 						retVal = false;
-					}
+					if (!Regex.Match(password.ToString(), @"/\d+/", RegexOptions.ECMAScript).Success)
+						retVal = false;
+					if (!Regex.Match(password.ToString(), @"/[a-z]/", RegexOptions.ECMAScript).Success ||
+					  !Regex.Match(password.ToString(), @"/[A-Z]/", RegexOptions.ECMAScript).Success)
+						retVal = false;
+					if (!Regex.Match(password.ToString(), @"/.[!,@,#,$,%,^,&,*,?,_,~,-,£,(,)]/", RegexOptions.ECMAScript).Success)
+						retVal = false;
 				}
+				//string patternPassword = @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,8}$";
+				//if (!string.IsNullOrEmpty(password.ToString()))
+				//{
+				//	if (!Regex.IsMatch(password.ToString(), patternPassword))
+				//	{
+				//		retVal = false;
+				//	}
+				//}
 			}
 
             return retVal;

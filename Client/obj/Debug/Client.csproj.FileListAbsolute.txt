@@ -27,3 +27,6 @@ C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\Security.cs.pdb
 C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\Datebase.pdb
 C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\Datebase.dll.config
 C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\EntityFramework.xml
+C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\AuthenticationService.exe.config
+C:\Users\Simic\Desktop\Credentials-Store\Client\bin\Debug\EntityFramework.SqlServer.xml

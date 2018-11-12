@@ -39,3 +39,6 @@ C:\Users\Simic\Desktop\Credentials-Store\AuthenticationService\obj\Debug\Authent
 C:\Users\Simic\Desktop\Credentials-Store\AuthenticationService\obj\Debug\AuthenticationService.csproj.CopyComplete
 C:\Users\Simic\Desktop\Credentials-Store\AuthenticationService\obj\Debug\AuthenticationService.exe
 C:\Users\Simic\Desktop\Credentials-Store\AuthenticationService\obj\Debug\AuthenticationService.pdb
+C:\Users\Simic\Desktop\Credentials-Store\AuthenticationService\bin\Debug\AuthenticationService.exe.config
+C:\Users\Simic\Desktop\Credentials-Store\AuthenticationService\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Simic\Desktop\Credentials-Store\AuthenticationService\bin\Debug\EntityFramework.SqlServer.xml
