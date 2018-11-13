@@ -25,13 +25,10 @@ namespace CredentialsStore
             ServiceHost hostAccountManagement = new ServiceHost(typeof(AccountManagement));
 			OpenAccountManagementHost(hostAccountManagement);
 
-			ServiceHost hostUserAccountManagement = new ServiceHost(typeof(UserAccountManagement));
-			OpenUserAccountManagementHost(hostUserAccountManagement);
-
 			ServiceHost hostCredentialCheck = new ServiceHost(typeof(CredentialCheck));
 			OpenCredentialCheckHost(hostCredentialCheck);
 
-           // thread1.Start();
+			thread1.Start();
 
             Console.ReadLine();
 
@@ -52,6 +49,7 @@ namespace CredentialsStore
 			string address = "net.tcp://localhost:5555/AccountManagement";
 		
 			host.AddServiceEndpoint(typeof(IAccountManagement), binding, address);
+			host.AddServiceEndpoint(typeof(IUserAccountManagement), binding, address);
 			host.Description.Behaviors.Remove(typeof(ServiceDebugBehavior));
 			host.Description.Behaviors.Add(new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true });
 			host.Authorization.ServiceAuthorizationManager = new AuthorizationManagerAccountManagement();
@@ -65,18 +63,7 @@ namespace CredentialsStore
 			host.Open();
 			Console.WriteLine("CredentialsStore AccountManagement service opened...");
 		}
-
-		static void OpenUserAccountManagementHost(ServiceHost host)
-		{
-			NetTcpBinding binding = MakeBinding();
-			string address = "net.tcp://localhost:9998/UserAccountManagement";
-
-			host.AddServiceEndpoint(typeof(IUserAccountManagement), binding, address);
-			host.Description.Behaviors.Remove(typeof(ServiceDebugBehavior));
-			host.Description.Behaviors.Add(new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true });
-			host.Open();
-			Console.WriteLine("CredentialsStore UserAccountManagement service opened...");
-		}
+	
 
 		static void OpenCredentialCheckHost(ServiceHost host)
 		{
@@ -90,26 +77,26 @@ namespace CredentialsStore
         {
             NetTcpBinding binding = new NetTcpBinding();
             string address = "net.tcp://localhost:9995/AuthenticationService";
-            
-                using (ProxyAuthenticationCheck proxy = new ProxyAuthenticationCheck(binding, new EndpointAddress(new Uri(address))))
-                {
+
+			using (ProxyAuthenticationCheck proxy = new ProxyAuthenticationCheck(binding, new EndpointAddress(new Uri(address))))
+			{
 				while (true)
 				{
 					try
-                    {
-                        List<string> loggedUsers = proxy.GetAllLoggedUsers();
-                        foreach(string user in loggedUsers)
-                        {
-                            if (PasswordPolicy.IsPasswordOut(DBManager.Instance.GetUserByUsername(user)))
-                            {
-                                proxy.NotifyClientsAndLogOut(user);
-                            }
-                        }
-                    }
-                    catch (SecurityException ex)
-                    {
-                        throw ex;
-                    }
+					{
+						List<string> loggedUsers = proxy.GetAllLoggedUsers();
+						foreach (string user in loggedUsers)
+						{
+							if (PasswordPolicy.IsPasswordOut(DBManager.Instance.GetUserByUsername(user)))
+							{
+								proxy.NotifyClientsAndLogOut(user, "Your password has been expired.Please conntact admin.You will be logged out...");
+							}
+						}
+					}
+					catch (Exception)
+					{
+
+					}
 					Thread.Sleep(2250);
 				}
 			}

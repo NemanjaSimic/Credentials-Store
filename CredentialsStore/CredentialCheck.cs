@@ -12,7 +12,7 @@ namespace CredentialsStore
 {
     class CredentialCheck : ICredentialCheck
     {
-        public void ValidateCredential(string username, string password)
+        public void ValidateCredential(string username, int password)
         {
             
             User user = DBManager.Instance.GetUserByUsername(username);
@@ -24,14 +24,16 @@ namespace CredentialsStore
                 }
                 else
                 {
-                    SecurityException ex = new SecurityException("Wrong Password");
-                    throw ex;
+					CredentialsException ex = new CredentialsException();
+					ex.Reason = "Wrong Password.";
+					throw new FaultException<CredentialsException>(ex, new FaultReason("Wrong Password."));
                 }
             }
             else
             {
-                SecurityException ex = new SecurityException("Username does not exist");
-                throw ex;
+				CredentialsException ex = new CredentialsException();
+				ex.Reason = "Username does not exist.";
+				throw new FaultException<CredentialsException>(ex, new FaultReason("Username does not exist."));
             }
         }
     }

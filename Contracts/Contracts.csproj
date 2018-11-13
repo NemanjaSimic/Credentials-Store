@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CredentialsException.cs" />
     <Compile Include="IAccountManagement.cs" />
     <Compile Include="IAuthenticationService.cs" />
     <Compile Include="ICredentialCheck.cs" />

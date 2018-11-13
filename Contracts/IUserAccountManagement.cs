@@ -12,7 +12,7 @@ namespace Contracts
     public interface IUserAccountManagement
     {
         [OperationContract]
-		[FaultContract(typeof(SecurityException))]
-		void ResetPassword(string username,SecureString oldPassword,SecureString newPassword);
+		[FaultContract(typeof(CredentialsException))]
+		void ResetPassword(string username,string oldPassword,string newPassword);
     }
 }

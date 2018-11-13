@@ -17,16 +17,18 @@ namespace AuthenticationService
 			factory = this.CreateChannel();
 		}
 
-		public void ValidateCredential(string username, string password)
+		public void ValidateCredential(string username, int password)
 		{
 			try
 			{
 				factory.ValidateCredential(username, password);
 			}
-			catch (SecurityAccessDeniedException e)
+			catch (Exception e)
 			{
 				//Console.WriteLine("Error while trying to validate credential. {0}", e.Message);
-				throw e;
+				CredentialsException ex = new CredentialsException();
+				ex.Reason = e.Message;
+				throw new FaultException<CredentialsException>(ex, new FaultReason(e.Message));
 			}
 		}
 	}

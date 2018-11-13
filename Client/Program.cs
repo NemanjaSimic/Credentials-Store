@@ -1,4 +1,5 @@
 ﻿using Contracts;
+using Security.cs;
 using System;
 using System.Security;
 using System.Security.Principal;
@@ -39,7 +40,7 @@ namespace Client
 									ClearConsoleBuffer();
 									Console.WriteLine("Enter username:");
 									string username = Console.ReadLine();
-									SecureString password = EnterPassword();
+									string password = EnterPasswordString();
 									proxy.CreateAccount(username,password);							
 									break;
 								case '2':
@@ -54,7 +55,7 @@ namespace Client
 									ClearConsoleBuffer();
 									Console.WriteLine("Enter username:");
 									string usernameForReset = Console.ReadLine();
-									SecureString passwordForReset = EnterPassword();
+									string passwordForReset = EnterPasswordString();
 									proxy.ResetPassword(usernameForReset,passwordForReset);
 									break;
 								default:
@@ -72,7 +73,7 @@ namespace Client
 					using (ProxyAuthenticationService proxyAuthSrvc = new ProxyAuthenticationService(bindingForAuthenticationService, new EndpointAddress(new Uri(addressForAuthenticationService))))
 					{
 						NetTcpBinding bindingForAccountManagement = MakeBinding();
-						string addressForUserAccountManagement = "net.tcp://localhost:9998/UserAccountManagement";
+						string addressForUserAccountManagement = "net.tcp://localhost:5555/AccountManagement";
 						using (ProxyUserAccountManagement proxyAccMngmnt = new ProxyUserAccountManagement(bindingForAccountManagement, new EndpointAddress(new Uri(addressForUserAccountManagement))))
 						{
 							bool exit = false;
@@ -88,10 +89,9 @@ namespace Client
 										string username = Console.ReadLine();
 
 										SecureString password = EnterPassword();
-										byte[] data = System.Text.Encoding.ASCII.GetBytes(password.ToString());
-										data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
-										string hash = System.Text.Encoding.ASCII.GetString(data);
-										proxyAuthSrvc.Login(username,hash);
+										int pass = SecureConverter.Encrypt(password);
+										
+										proxyAuthSrvc.Login(username,pass);
 										break;
 									case '2':
 										ClearConsoleBuffer();
@@ -108,10 +108,10 @@ namespace Client
 										string usernameForReset = Console.ReadLine();
 
 										Console.WriteLine("First we need your current password");
-										SecureString oldPassword = EnterPassword();
+										string oldPassword = EnterPasswordString();
 
 										Console.WriteLine("Now you can pick new password");
-										SecureString newPassword = EnterPassword();
+										string newPassword = EnterPasswordString();
 
 										proxyAccMngmnt.ResetPassword(usernameForReset,oldPassword,newPassword);
 										break;
@@ -204,8 +204,14 @@ namespace Client
 				Console.Write("*");
 
 				// Exit if Enter key is pressed.
-			} 
+			}
+			securePwd.RemoveAt(securePwd.Length - 1);
 			return securePwd;
+		}
+		static string EnterPasswordString()
+		{
+			Console.WriteLine("Enter password:");
+			return Console.ReadLine();
 		}
 
 		static void EnterCredentials(string username, SecureString password)

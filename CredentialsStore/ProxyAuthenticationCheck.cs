@@ -27,9 +27,9 @@ namespace CredentialsStore
 			return factory.IsAuthenticated(username);
 		}
 
-        public void NotifyClientsAndLogOut(string username)
+        public void NotifyClientsAndLogOut(string username,string message)
         {
-            factory.NotifyClientsAndLogOut(username);
+            factory.NotifyClientsAndLogOut(username,message);
         }
     }
 }

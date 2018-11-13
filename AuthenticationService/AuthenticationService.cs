@@ -13,28 +13,39 @@ namespace AuthenticationService
 	[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
 	public class AuthenticationService : IAuthenticationService, IAuthenticationCheck
 	{
-		private Dictionary<string, ILogoutNotification> loggedUsers = new Dictionary<string, ILogoutNotification>();
+		private static Dictionary<string, ILogoutNotification> loggedUsers = new Dictionary<string, ILogoutNotification>();
 		private NetTcpBinding binding = new NetTcpBinding();
 		private string address = "net.tcp://localhost:9997/CredentialCheck";
 
-		public void Login(string username, string password)
+		public void Login(string username, int password)
 		{
-			using (ProxyCredentialsStore proxy = new ProxyCredentialsStore(binding, new EndpointAddress(new Uri(address))))
+			if (!loggedUsers.ContainsKey(username))
 			{
-				try
+				using (ProxyCredentialsStore proxy = new ProxyCredentialsStore(binding, new EndpointAddress(new Uri(address))))
 				{
-					proxy.ValidateCredential(username, password);
-					ILogoutNotification CallbackService = OperationContext.Current.GetCallbackChannel<ILogoutNotification>();
-					loggedUsers.Add(username, CallbackService);
-					Console.WriteLine("User {0} successfully logged in!");
-				}
-				catch (SecurityException ex)
-				{
-					SecurityException newEx = new SecurityException(ex.Message);
-					throw newEx;
+					try
+					{
+						proxy.ValidateCredential(username, password);
+						ILogoutNotification CallbackService = OperationContext.Current.GetCallbackChannel<ILogoutNotification>();
+						loggedUsers.Add(username, CallbackService);
+						Console.WriteLine("User {0} successfully logged in!");
+					}
+					catch (Exception e)
+					{
+						CredentialsException ex = new CredentialsException();
+						ex.Reason = e.Message;
+						throw new FaultException<CredentialsException>(ex, new FaultReason(e.Message));
+					}
 				}
 			}
-            
+			else
+			{
+				CredentialsException ex = new CredentialsException();
+				ex.Reason = "User is already logged in.";
+				throw new FaultException<CredentialsException>(ex, new FaultReason("User is already logged in."));
+			}
+		
+	 
 		}
 
 		public void Logout(string username)
@@ -46,8 +57,9 @@ namespace AuthenticationService
 			}
 			else
 			{
-				SecurityException ex = new SecurityException("User already logged out");
-				throw ex;
+				CredentialsException ex = new CredentialsException();
+				ex.Reason = "User already logged out.";
+				throw new FaultException<CredentialsException>(ex, new FaultReason("User already logged out."));
 			}
 		}
 
@@ -55,17 +67,18 @@ namespace AuthenticationService
 		{
 			return loggedUsers.ContainsKey(username);
 		}
-        public void NotifyClientsAndLogOut(string username)
+        public void NotifyClientsAndLogOut(string username,string message)
         {
             if (loggedUsers.ContainsKey(username))
             {
-                loggedUsers[username].NotifyClient();
+                loggedUsers[username].NotifyClient(message);
                 Logout(username);
             }
             else
             {
-                SecurityException ex = new SecurityException("Client is already logged out.");
-                throw ex;
+				CredentialsException ex = new CredentialsException();
+				ex.Reason = "Client is already logged out.";
+				throw new FaultException<CredentialsException>(ex, new FaultReason("Client is already logged out."));				
             }
         }
 

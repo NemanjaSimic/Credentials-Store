@@ -10,12 +10,12 @@ namespace Datebase
 {
     class DataBaseContext : DbContext
     {
-        public DataBaseContext() : base("CredentialsStore")
+        public DataBaseContext() : base("Credentials")
         {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataBaseContext, Config>());
 
         }
 
-        public  DbSet<User> CredentialsStore { get; set; }
+        public  DbSet<User> Credentials { get; set; }
     }
 }

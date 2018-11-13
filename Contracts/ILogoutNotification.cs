@@ -11,6 +11,6 @@ namespace Contracts
     public interface ILogoutNotification
     {
         [OperationContract]
-        void NotifyClient();
+        void NotifyClient(string message);
     }
 }

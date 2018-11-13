@@ -12,13 +12,13 @@ namespace Contracts
     public interface IAccountManagement
     {
         [OperationContract]
-		[FaultContract(typeof(SecurityException))]
-        void CreateAccount(string username, SecureString password);
+		[FaultContract(typeof(CredentialsException))]
+        void CreateAccount(string username, string password);
         [OperationContract]
-		[FaultContract(typeof(SecurityException))]
+		[FaultContract(typeof(CredentialsException))]
 		void DeleteAccount(string username);
         [OperationContract]
-		[FaultContract(typeof(SecurityException))]
-		void ResetPassword(string username, SecureString password);
+		[FaultContract(typeof(CredentialsException))]
+		void ResetPassword(string username, string password);
     }
 }

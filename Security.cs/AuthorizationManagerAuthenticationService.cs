@@ -18,8 +18,7 @@ namespace Security.cs
 			{
 				authorizated = true;
 			}
-				authorizated = true;
-
+			authorizated = true;
 			return authorizated;
 		}
 	}

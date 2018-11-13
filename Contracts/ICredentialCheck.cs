@@ -12,7 +12,7 @@ namespace Contracts
     public interface ICredentialCheck
     {
         [OperationContract]
-		[FaultContract(typeof(SecurityException))]
-        void ValidateCredential(string username, string password);
+		[FaultContract(typeof(CredentialsException))]
+        void ValidateCredential(string username, int password);
     }
 }

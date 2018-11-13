@@ -12,7 +12,7 @@ using AuthenticationService;
 
 namespace Client
 {
-	public class ProxyAuthenticationService : DuplexClientBase<IAuthenticationService>, IAuthenticationService
+	public class ProxyAuthenticationService : DuplexClientBase<IAuthenticationService>, IAuthenticationService, IDisposable
 	{
 		IAuthenticationService factory;
 		public ProxyAuthenticationService(NetTcpBinding binding,EndpointAddress address) : base(new LogoutNotification(),binding,address)
@@ -20,16 +20,12 @@ namespace Client
 			this.factory = CreateChannel();
 		}
 
-		public void Login(string username, string password)
+		public void Login(string username, int password)
 		{
 			try
 			{
 				factory.Login(username, password);
 				Console.WriteLine("User logged in successfully!");
-			}
-			catch (SecurityAccessDeniedException ex)
-			{
-				Console.WriteLine("Error while trying to login.{0}", ex.Message);
 			}
 			catch (Exception e)
 			{
@@ -44,10 +40,20 @@ namespace Client
 				factory.Logout(username);
 				Console.WriteLine("User logged out successfully!");
             }
-            catch(SecurityAccessDeniedException ex)
+            catch(Exception ex)
             {
 				Console.WriteLine("Error while trying to logout.{0}", ex.Message);
 			}
+		}
+
+		public void Dispose()
+		{
+			if (factory != null)
+			{
+				factory = null;
+			}
+
+			this.Close();
 		}
 	}
 }

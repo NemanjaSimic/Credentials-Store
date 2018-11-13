@@ -12,11 +12,11 @@ namespace Contracts
 	public interface IAuthenticationCheck
 	{
 		[OperationContract]
-		[FaultContract(typeof(SecurityException))]
+		[FaultContract(typeof(CredentialsException))]
 		bool IsAuthenticated(string username);
         [OperationContract]
-        [FaultContract(typeof(SecurityException))]
-        void NotifyClientsAndLogOut(string username);
+        [FaultContract(typeof(CredentialsException))]
+        void NotifyClientsAndLogOut(string username,string message);
         [OperationContract]
         List<string> GetAllLoggedUsers();        
 

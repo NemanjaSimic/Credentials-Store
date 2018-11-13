@@ -12,10 +12,10 @@ namespace Contracts
 	public interface IAuthenticationService
 	{
 		[OperationContract]
-		[FaultContract(typeof(SecurityException))]
-		void Login(string username,string password);
+		[FaultContract(typeof(CredentialsException))]
+		void Login(string username,int password);
 		[OperationContract]
-		[FaultContract(typeof(SecurityException))]
+		[FaultContract(typeof(CredentialsException))]
 		void Logout(string username);
 
 	}

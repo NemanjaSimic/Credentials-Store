@@ -9,9 +9,9 @@ namespace AuthenticationService
 {
     public class LogoutNotification : ILogoutNotification
     {
-        public void NotifyClient()
+        public void NotifyClient(string message)
         {
-            Console.WriteLine("Your password has expired, you need to reset it. You will be logged out...");
+            Console.WriteLine(message);
         }
     }
 }

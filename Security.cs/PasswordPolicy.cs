@@ -54,7 +54,7 @@ namespace Security
 			}
 		}
 
-        public static bool ValidatePassword(SecureString password)
+        public static bool ValidatePassword(string password)
         {
 			LoadRules();
 			bool retVal = true;
@@ -63,20 +63,20 @@ namespace Security
 			{
 				if (!string.IsNullOrEmpty(password.ToString()))
 				{
-					if (password.ToString().Length < 7)
+					if (password.Length < 7)
 						retVal = false;
-					if (!Regex.Match(password.ToString(), @"/\d+/", RegexOptions.ECMAScript).Success)
+					if (Regex.Match(password, @"/\d+/", RegexOptions.ECMAScript).Success)
 						retVal = false;
-					if (!Regex.Match(password.ToString(), @"/[a-z]/", RegexOptions.ECMAScript).Success ||
-					  !Regex.Match(password.ToString(), @"/[A-Z]/", RegexOptions.ECMAScript).Success)
+					if (Regex.Match(password, @"/[a-z]/", RegexOptions.ECMAScript).Success &&
+					  Regex.Match(password, @"/[A-Z]/", RegexOptions.ECMAScript).Success)
 						retVal = false;
-					if (!Regex.Match(password.ToString(), @"/.[!,@,#,$,%,^,&,*,?,_,~,-,£,(,)]/", RegexOptions.ECMAScript).Success)
+					if (Regex.Match(password, @"/.[!,@,#,$,%,^,&,*,?,_,~,-,£,(,)]/", RegexOptions.ECMAScript).Success)
 						retVal = false;
 				}
 				//string patternPassword = @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,8}$";
-				//if (!string.IsNullOrEmpty(password.ToString()))
+				//if (!string.IsNullOrEmpty(password))
 				//{
-				//	if (!Regex.IsMatch(password.ToString(), patternPassword))
+				//	if (Regex.IsMatch(password, patternPassword))
 				//	{
 				//		retVal = false;
 				//	}
@@ -86,7 +86,7 @@ namespace Security
             return retVal;
         }
 
-        public static bool CanResetPassword(string username, string password)
+        public static bool CanResetPassword(string username, int password)
         {
 			LoadRules();
             bool retVal = false;
