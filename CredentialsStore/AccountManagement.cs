@@ -16,105 +16,136 @@ namespace CredentialsStore
     {
         public void CreateAccount(string username, string password)
         {
-            if (PasswordPolicy.ValidatePassword(password))
-            {
-				int pass = password.GetHashCode();
-				if (DBManager.Instance.AddUser(new User(username, pass)))
-                {
-					DBManager.Instance.AddPasswordToHistory(username, pass);
-					Console.WriteLine("User {0} successfully created!",username);
-                }
-                else
-                {
-					CredentialsException ex = new CredentialsException();
-					ex.Reason = "User with this username already exists";
-					throw new FaultException<CredentialsException>(ex, new FaultReason("User with this username already exists"));
+			CustomPrincipal principal = OperationContext.Current.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] as CustomPrincipal;
+			if (principal.IsInRole("CreateAccount"))
+			{
+				if (PasswordPolicy.ValidatePassword(password))
+				{
+					int pass = password.GetHashCode();
+					if (DBManager.Instance.AddUser(new User(username, pass)))
+					{
+						DBManager.Instance.AddPasswordToHistory(username, pass);
+						Console.WriteLine("User {0} successfully created!", username);
+					}
+					else
+					{
+						CredentialsException ex = new CredentialsException();
+						ex.Reason = "User with this username already exists";
+						throw new FaultException<CredentialsException>(ex, new FaultReason("User with this username already exists"));
+					}
 				}
-            }
-            else
-            {
-				CredentialsException ex = new CredentialsException();
-				ex.Reason = "Password must contains at least one upper case,one lower case, one number and one special char";
-				throw new FaultException<CredentialsException>(ex, new FaultReason("Password must contains at least one upper case,one lower case, one number and one special char"));
+				else
+				{
+					CredentialsException ex = new CredentialsException();
+					ex.Reason = "Password must contains at least one upper case,one lower case, one number and one special char";
+					throw new FaultException<CredentialsException>(ex, new FaultReason("Password must contains at least one upper case,one lower case, one number and one special char"));
+				}
 			}
-        }
+			else
+			{
+				CredentialsException ex = new CredentialsException();
+				ex.Reason = "You are not authorized for this action.";
+				throw new FaultException<CredentialsException>(ex, new FaultReason("You are not authorized for this action."));
+			}
+		}
 
         public void DeleteAccount(string username)
         {
-            User user = DBManager.Instance.GetUserByUsername(username);
+			CustomPrincipal principal = OperationContext.Current.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] as CustomPrincipal;
+			if (principal.IsInRole("DeleteAccount"))
+			{
+				User user = DBManager.Instance.GetUserByUsername(username);
 
-            if(user != null && DBManager.Instance.DeleteUser(user))
-            {
-				//Console.WriteLine("User {0} successfully deleted!",username);
-				DBManager.Instance.DeletePasswordToHistory(username);
-				NetTcpBinding binding = new NetTcpBinding();
-				string address = "net.tcp://localhost:9995/AuthenticationService";
-				using (ProxyAuthenticationCheck proxy = new ProxyAuthenticationCheck(binding, new EndpointAddress(new Uri(address))))
+				if (user != null && DBManager.Instance.DeleteUser(user))
 				{
-					proxy.NotifyClientsAndLogOut(username, "Your account has been deleted by admin.You are logged out!");
+					//Console.WriteLine("User {0} successfully deleted!",username);
+					DBManager.Instance.DeletePasswordToHistory(username);
+					NetTcpBinding binding = new NetTcpBinding();
+					string address = "net.tcp://localhost:9995/AuthenticationService";
+					using (ProxyAuthenticationCheck proxy = new ProxyAuthenticationCheck(binding, new EndpointAddress(new Uri(address))))
+					{
+						proxy.NotifyClientsAndLogOut(username, "Your account has been deleted by admin.You are logged out!");
+					}
+
 				}
-				
+				else
+				{
+					CredentialsException ex = new CredentialsException();
+					ex.Reason = "User does not exist or is already deleted by other admin.";
+					throw new FaultException<CredentialsException>(ex, new FaultReason("User does not exist or is already deleted by other admin."));
+				}
 			}
 			else
-            {
+			{
 				CredentialsException ex = new CredentialsException();
-				ex.Reason = "User does not exist or is already deleted by other admin.";
-				throw new FaultException<CredentialsException>(ex, new FaultReason("User does not exist or is already deleted by other admin."));
+				ex.Reason = "You are not authorized for this action.";
+				throw new FaultException<CredentialsException>(ex, new FaultReason("You are not authorized for this action."));
 			}
-        }
+		}
 
         public void ResetPassword(string username,string newPassword)
         {
-            User user = DBManager.Instance.GetUserByUsername(username);
-
-			if (user != null)
+			CustomPrincipal principal = OperationContext.Current.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] as CustomPrincipal;
+			if (principal.IsInRole("ResetUserPassword"))
 			{
-                if (PasswordPolicy.ValidatePassword(newPassword))
-                {
-					int password = newPassword.GetHashCode();
+				User user = DBManager.Instance.GetUserByUsername(username);
 
-					if (PasswordPolicy.CanResetPassword(username,password))
-                    {				
-                        if (!DBManager.Instance.DeleteUser(user))
-                        {
+				if (user != null)
+				{
+					if (PasswordPolicy.ValidatePassword(newPassword))
+					{
+						int password = newPassword.GetHashCode();
+
+						if (PasswordPolicy.CanResetPassword(username, password))
+						{
+							if (!DBManager.Instance.DeleteUser(user))
+							{
+								CredentialsException ex = new CredentialsException();
+								ex.Reason = "There was a conflict. Someone else is changing informations about this user.Trying to make things right...";
+								throw new FaultException<CredentialsException>(ex, new FaultReason("There was a conflict. Someone else is changing informations about this user.Trying to make things right..."));
+							}
+							user.Password = password;
+							user.PasswordInitialized = DateTime.Now;
+							DBManager.Instance.AddPasswordToHistory(user.Username, password);
+							if (!DBManager.Instance.AddUser(user))
+							{
+								CredentialsException ex = new CredentialsException();
+								ex.Reason = "There was a conflict. Someone else is changing informations about this user.";
+								throw new FaultException<CredentialsException>(ex, new FaultReason("There was a conflict. Someone else is changing informations about this user."));
+							}
+						}
+						else
+						{
 							CredentialsException ex = new CredentialsException();
-							ex.Reason = "There was a conflict. Someone else is changing informations about this user.Trying to make things right...";
-							throw new FaultException<CredentialsException>(ex, new FaultReason("There was a conflict. Someone else is changing informations about this user.Trying to make things right..."));
-                        }
-                        user.Password = password;
-                        user.PasswordInitialized = DateTime.Now;
-                        DBManager.Instance.AddPasswordToHistory(user.Username,password);
-                        if (!DBManager.Instance.AddUser(user))
-                        {
-							CredentialsException ex = new CredentialsException();
-							ex.Reason = "There was a conflict. Someone else is changing informations about this user.";
-							throw new FaultException<CredentialsException>(ex, new FaultReason("There was a conflict. Someone else is changing informations about this user."));
-                        }
-                    }
-                    else
-                    {
+							ex.Reason = "This password has been used too many times.";
+							throw new FaultException<CredentialsException>(ex, new FaultReason("This password has been used too many times."));
+						}
+
+					}
+					else
+					{
 						CredentialsException ex = new CredentialsException();
-						ex.Reason = "This password has been used too many times.";
-						throw new FaultException<CredentialsException>(ex, new FaultReason("This password has been used too many times."));
-                    }
-
-                }
-                else
-                {
+						ex.Reason = "Password must contains at least one upper case,one lower case, one number and one special char.";
+						throw new FaultException<CredentialsException>(ex, new FaultReason("Password must contains at least one upper case,one lower case, one number and one special char."));
+					}
+				}
+				else
+				{
 					CredentialsException ex = new CredentialsException();
-					ex.Reason = "Password must contains at least one upper case,one lower case, one number and one special char.";
-					throw new FaultException<CredentialsException>(ex, new FaultReason("Password must contains at least one upper case,one lower case, one number and one special char."));				
-                }
-            }
+					ex.Reason = "User with this username does not exist.";
+					throw new FaultException<CredentialsException>(ex, new FaultReason("User with this username does not exist."));
+				}
+			}
 			else
 			{
 				CredentialsException ex = new CredentialsException();
-				ex.Reason = "User with this username does not exist.";
-				throw new FaultException<CredentialsException>(ex, new FaultReason("User with this username does not exist."));
+				ex.Reason = "You are not authorized for this action.";
+				throw new FaultException<CredentialsException>(ex, new FaultReason("You are not authorized for this action."));
 			}
-        }
+		}
 		public void ResetPassword(string username, string oldPassword, string newPassword)
 		{
+
 			NetTcpBinding binding = new NetTcpBinding();
 			string address = "net.tcp://localhost:9995/AuthenticationService";
 			bool isAuth = false;
@@ -137,60 +168,70 @@ namespace CredentialsStore
 
 			if (isAuth)
 			{
-				User user = DBManager.Instance.GetUserByUsername(username);
-				int oldPass = oldPassword.GetHashCode();
-				if (user != null)
+				CustomPrincipal principal = OperationContext.Current.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] as CustomPrincipal;
+				if (principal.IsInRole("ResetPassword"))
 				{
-					if (user.Password.Equals(oldPass))
+					User user = DBManager.Instance.GetUserByUsername(username);
+					int oldPass = oldPassword.GetHashCode();
+					if (user != null)
 					{
-						if (PasswordPolicy.ValidatePassword(newPassword))
+						if (user.Password.Equals(oldPass))
 						{
-							int newPass = newPassword.GetHashCode();
-							if (PasswordPolicy.CanResetPassword(username, newPass))
+							if (PasswordPolicy.ValidatePassword(newPassword))
 							{
-								if (!DBManager.Instance.DeleteUser(user))
+								int newPass = newPassword.GetHashCode();
+								if (PasswordPolicy.CanResetPassword(username, newPass))
+								{
+									if (!DBManager.Instance.DeleteUser(user))
+									{
+										CredentialsException ex = new CredentialsException();
+										ex.Reason = "There was a conflict. Someone else is changing informations about this user.Trying to make things right...";
+										throw new FaultException<CredentialsException>(ex, new FaultReason("There was a conflict. Someone else is changing informations about this user.Trying to make things right..."));
+									}
+									user.PasswordInitialized = DateTime.Now;
+									user.Password = newPass;
+									DBManager.Instance.AddPasswordToHistory(user.Username, newPass);
+									if (!DBManager.Instance.AddUser(user))
+									{
+										CredentialsException ex = new CredentialsException();
+										ex.Reason = "There was a conflict. Someone else is changing informations about this user.";
+										throw new FaultException<CredentialsException>(ex, new FaultReason("There was a conflict. Someone else is changing informations about this user."));
+									}
+								}
+								else
 								{
 									CredentialsException ex = new CredentialsException();
-									ex.Reason = "There was a conflict. Someone else is changing informations about this user.Trying to make things right...";
-									throw new FaultException<CredentialsException>(ex, new FaultReason("There was a conflict. Someone else is changing informations about this user.Trying to make things right..."));
+									ex.Reason = "This password has been used too many times.";
+									throw new FaultException<CredentialsException>(ex, new FaultReason("This password has been used too many times."));
 								}
-								user.PasswordInitialized = DateTime.Now;
-								user.Password = newPass;
-								DBManager.Instance.AddPasswordToHistory(user.Username, newPass);
-								if (!DBManager.Instance.AddUser(user))
-								{
-									CredentialsException ex = new CredentialsException();
-									ex.Reason = "There was a conflict. Someone else is changing informations about this user.";
-									throw new FaultException<CredentialsException>(ex, new FaultReason("There was a conflict. Someone else is changing informations about this user."));
-								}
+
 							}
 							else
 							{
 								CredentialsException ex = new CredentialsException();
-								ex.Reason = "This password has been used too many times.";
-								throw new FaultException<CredentialsException>(ex, new FaultReason("This password has been used too many times."));
+								ex.Reason = "Password must contains at least one upper case,one lower case, one number and one special char.";
+								throw new FaultException<CredentialsException>(ex, new FaultReason("There was a conflict. Someone else is changing informations about this user.Trying to make things right..."));
 							}
-
 						}
 						else
 						{
 							CredentialsException ex = new CredentialsException();
-							ex.Reason = "Password must contains at least one upper case,one lower case, one number and one special char.";
-							throw new FaultException<CredentialsException>(ex, new FaultReason("There was a conflict. Someone else is changing informations about this user.Trying to make things right..."));
+							ex.Reason = "Invalid password.";
+							throw new FaultException<CredentialsException>(ex, new FaultReason("Invalid password."));
 						}
 					}
 					else
 					{
 						CredentialsException ex = new CredentialsException();
-						ex.Reason = "Invalid password.";
-						throw new FaultException<CredentialsException>(ex, new FaultReason("Invalid password."));
+						ex.Reason = "User with this username does not exist.";
+						throw new FaultException<CredentialsException>(ex, new FaultReason("User with this username does not exist."));
 					}
 				}
 				else
 				{
 					CredentialsException ex = new CredentialsException();
-					ex.Reason = "User with this username does not exist.";
-					throw new FaultException<CredentialsException>(ex, new FaultReason("User with this username does not exist."));
+					ex.Reason = "You are not authorized for this action.";
+					throw new FaultException<CredentialsException>(ex, new FaultReason("You are not authorized for this action."));
 				}
 			}
 			else

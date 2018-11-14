@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Contracts;
 using Datebase;
 using System.ServiceModel;
+using Security.cs;
 
 namespace AuthenticationService
 {
@@ -19,47 +20,75 @@ namespace AuthenticationService
 
 		public void Login(string username, int password)
 		{
-			if (!loggedUsers.ContainsKey(username))
+			CustomPrincipal principal = OperationContext.Current.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] as CustomPrincipal;
+			string name = principal.Identity.Name.Split('\\').Last();
+			if (name.Equals(username))
 			{
-				using (ProxyCredentialsStore proxy = new ProxyCredentialsStore(binding, new EndpointAddress(new Uri(address))))
+				if (principal.IsInRole("Login"))
 				{
-					try
+					if (!loggedUsers.ContainsKey(username))
 					{
-						proxy.ValidateCredential(username, password);
-						ILogoutNotification CallbackService = OperationContext.Current.GetCallbackChannel<ILogoutNotification>();
-						loggedUsers.Add(username, CallbackService);
-						Console.WriteLine("User {0} successfully logged in!");
+						using (ProxyCredentialsStore proxy = new ProxyCredentialsStore(binding, new EndpointAddress(new Uri(address))))
+						{
+							try
+							{
+								proxy.ValidateCredential(username, password);
+								ILogoutNotification CallbackService = OperationContext.Current.GetCallbackChannel<ILogoutNotification>();
+								loggedUsers.Add(username, CallbackService);
+								Console.WriteLine("User {0} successfully logged in!");
+							}
+							catch (Exception e)
+							{
+								CredentialsException ex = new CredentialsException();
+								ex.Reason = e.Message;
+								throw new FaultException<CredentialsException>(ex, new FaultReason(e.Message));
+							}
+						}
 					}
-					catch (Exception e)
+					else
 					{
 						CredentialsException ex = new CredentialsException();
-						ex.Reason = e.Message;
-						throw new FaultException<CredentialsException>(ex, new FaultReason(e.Message));
+						ex.Reason = "User is already logged in.";
+						throw new FaultException<CredentialsException>(ex, new FaultReason("User is already logged in."));
 					}
+				}
+				else
+				{
+					CredentialsException ex = new CredentialsException();
+					ex.Reason = "You are not authorized for this action.";
+					throw new FaultException<CredentialsException>(ex, new FaultReason("You are not authorized for this action."));
 				}
 			}
 			else
 			{
 				CredentialsException ex = new CredentialsException();
-				ex.Reason = "User is already logged in.";
-				throw new FaultException<CredentialsException>(ex, new FaultReason("User is already logged in."));
+				ex.Reason = "Your username does not match windows account username.";
+				throw new FaultException<CredentialsException>(ex, new FaultReason("Your username does not match windows account username."));
 			}
-		
-	 
 		}
 
 		public void Logout(string username)
 		{
-			if (loggedUsers.ContainsKey(username))
+			CustomPrincipal principal = OperationContext.Current.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] as CustomPrincipal;
+			if (principal.IsInRole("Logout"))
 			{
-				loggedUsers.Remove(username);
-				Console.WriteLine("User {0} successfully logged out!");
+				if (loggedUsers.ContainsKey(username))
+				{
+					loggedUsers.Remove(username);
+					Console.WriteLine("User {0} successfully logged out!");
+				}
+				else
+				{
+					CredentialsException ex = new CredentialsException();
+					ex.Reason = "User already logged out.";
+					throw new FaultException<CredentialsException>(ex, new FaultReason("User already logged out."));
+				}
 			}
 			else
 			{
 				CredentialsException ex = new CredentialsException();
-				ex.Reason = "User already logged out.";
-				throw new FaultException<CredentialsException>(ex, new FaultReason("User already logged out."));
+				ex.Reason = "You are not authorized for this action.";
+				throw new FaultException<CredentialsException>(ex, new FaultReason("You are not authorized for this action."));
 			}
 		}
 
