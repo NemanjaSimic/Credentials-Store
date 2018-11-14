@@ -9,11 +9,6 @@ D:\Downloads\Credentials-Store-master\Credentials-Store\Contracts\bin\Debug\Cont
 D:\Downloads\Credentials-Store-master\Credentials-Store\Contracts\obj\Debug\Contracts.csproj.CoreCompileInputs.cache
 D:\Downloads\Credentials-Store-master\Credentials-Store\Contracts\obj\Debug\Contracts.dll
 D:\Downloads\Credentials-Store-master\Credentials-Store\Contracts\obj\Debug\Contracts.pdb
-C:\Users\pc\Desktop\Credentials-Store\Contracts\bin\Debug\Contracts.dll
-C:\Users\pc\Desktop\Credentials-Store\Contracts\bin\Debug\Contracts.pdb
-C:\Users\pc\Desktop\Credentials-Store\Contracts\obj\Debug\Contracts.csproj.CoreCompileInputs.cache
-C:\Users\pc\Desktop\Credentials-Store\Contracts\obj\Debug\Contracts.dll
-C:\Users\pc\Desktop\Credentials-Store\Contracts\obj\Debug\Contracts.pdb
 C:\Users\Simic\Desktop\Credentials-Store\Contracts\bin\Debug\Contracts.dll
 C:\Users\Simic\Desktop\Credentials-Store\Contracts\bin\Debug\Contracts.pdb
 C:\Users\Simic\Desktop\Credentials-Store\Contracts\obj\Debug\Contracts.csproj.CoreCompileInputs.cache
