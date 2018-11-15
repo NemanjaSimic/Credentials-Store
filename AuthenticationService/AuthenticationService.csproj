@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.ServiceModel" />
@@ -59,6 +60,10 @@
     <Compile Include="ProxyCredentialsStore.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CertManager\CertManager.csproj">
+      <Project>{09F6AC05-E1B7-49A5-A9CA-EF1C32B057A7}</Project>
+      <Name>CertManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Contracts\Contracts.csproj">
       <Project>{f40c0f99-dbfc-400d-8514-518c9d118079}</Project>
       <Name>Contracts</Name>

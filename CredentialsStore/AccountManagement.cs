@@ -9,6 +9,8 @@ using System.Security;
 using Datebase;
 using Security;
 using Security.cs;
+using System.Security.Cryptography.X509Certificates;
+using Manager;
 
 namespace CredentialsStore
 {
@@ -57,12 +59,23 @@ namespace CredentialsStore
 				User user = DBManager.Instance.GetUserByUsername(username);
 
 				if (user != null && DBManager.Instance.DeleteUser(user))
-				{
-					//Console.WriteLine("User {0} successfully deleted!",username);
+				{				
+					string srvCertCN = "authservice";
 					DBManager.Instance.DeletePasswordToHistory(username);
-					NetTcpBinding binding = new NetTcpBinding();
-					string address = "net.tcp://localhost:9995/AuthenticationService";
-					using (ProxyAuthenticationCheck proxy = new ProxyAuthenticationCheck(binding, new EndpointAddress(new Uri(address))))
+
+					NetTcpBinding binding = new NetTcpBinding()
+					{
+						CloseTimeout = new TimeSpan(0, 60, 0),
+						OpenTimeout = new TimeSpan(0, 60, 0),
+						ReceiveTimeout = new TimeSpan(0, 60, 0),
+						SendTimeout = new TimeSpan(0, 60, 0),
+					};
+					binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate;
+					X509Certificate2 srvCert = CertManager.GetCertificateFromStorage(StoreName.TrustedPeople, StoreLocation.LocalMachine, srvCertCN);
+					EndpointAddress address = new EndpointAddress(new Uri("net.tcp://localhost:9995/AuthenticationService"),
+											  new X509CertificateEndpointIdentity(srvCert));
+				
+					using (ProxyAuthenticationCheck proxy = new ProxyAuthenticationCheck(binding,address))
 					{
 						proxy.NotifyClientsAndLogOut(username, "Your account has been deleted by admin.You are logged out!");
 					}
@@ -145,11 +158,20 @@ namespace CredentialsStore
 		}
 		public void ResetPassword(string username, string oldPassword, string newPassword)
 		{
-
-			NetTcpBinding binding = new NetTcpBinding();
-			string address = "net.tcp://localhost:9995/AuthenticationService";
+			string srvCertCN = "authservice";
+			NetTcpBinding binding = new NetTcpBinding()
+			{
+				CloseTimeout = new TimeSpan(0, 60, 0),
+				OpenTimeout = new TimeSpan(0, 60, 0),
+				ReceiveTimeout = new TimeSpan(0, 60, 0),
+				SendTimeout = new TimeSpan(0, 60, 0),
+			};
+			binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate;
+			X509Certificate2 srvCert = CertManager.GetCertificateFromStorage(StoreName.TrustedPeople, StoreLocation.LocalMachine, srvCertCN);
+			EndpointAddress address = new EndpointAddress(new Uri("net.tcp://localhost:9995/AuthenticationService"),
+									  new X509CertificateEndpointIdentity(srvCert));
 			bool isAuth = false;
-			using (ProxyAuthenticationCheck proxy = new ProxyAuthenticationCheck(binding, new EndpointAddress(new Uri(address))))
+			using (ProxyAuthenticationCheck proxy = new ProxyAuthenticationCheck(binding,address))
 			{
 
 				try

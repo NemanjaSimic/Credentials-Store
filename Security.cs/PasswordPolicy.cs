@@ -16,6 +16,7 @@ namespace Security
 		private static bool complexPass;
 		private static int expireTimeSeconds;
 		private static int numberOrRepeats;
+		private static int periodOfCheck;
 
 		private static void LoadRules()
 		{
@@ -42,6 +43,9 @@ namespace Security
 
 				if (!Int32.TryParse(rules[2], out numberOrRepeats))
 					numberOrRepeats = 3;
+
+				if (!Int32.TryParse(rules[3], out periodOfCheck))
+					periodOfCheck = 3;
 			}
 			catch (Exception e)
 			{
@@ -51,42 +55,22 @@ namespace Security
 				complexPass = true;
 				expireTimeSeconds = 300;
 				numberOrRepeats = 3;
+				periodOfCheck = 3;
 			}
 		}
 
         public static bool ValidatePassword(string password)
         {
 			LoadRules();
-			bool retVal = false;
+			bool retVal = true;
 
 			if (complexPass)
 			{
-                //if (!string.IsNullOrEmpty(password.ToString()))
-                //{
-                //	if (password.Length < 7)
-                //		retVal = false;
-                //                if (!Regex.Match(password, @"/\d+/", RegexOptions.ECMAScript).Success)
-                //                    retVal = false;
-                //                if (!Regex.Match(password, @"/[a-z]/", RegexOptions.ECMAScript).Success &&
-                //                  !Regex.Match(password, @"/[A-Z]/", RegexOptions.ECMAScript).Success)
-                //                    retVal = false;
-                //                if (!Regex.Match(password, @"/.[!,@,#,$,%,^,&,*,?,_,~,-,£,(,)]/", RegexOptions.ECMAScript).Success)
-                //		retVal = false;
-                //}
-                //string patternPassword = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}$";
-                //if (!string.IsNullOrEmpty(password))
-                //{
-                //    if (Regex.IsMatch(password, patternPassword))
-                //    {
-                //        retVal = false;
-                //    }
-                //}
                 var input = password;
-
 
                 if (string.IsNullOrWhiteSpace(input))
                 {
-                    return false;
+					retVal = false;
                 }
 
                 var hasNumber = new Regex(@"[0-9]+");
@@ -97,31 +81,26 @@ namespace Security
 
                 if (!hasLowerChar.IsMatch(input))
                 {
-                    return false;
-                }
+					retVal = false;
+				}
                 else if (!hasUpperChar.IsMatch(input))
                 {
-                    return false;
-                }
+					retVal = false;
+				}
                 else if (!hasMiniMaxChars.IsMatch(input))
                 {
-                    return false;
-                }
+					retVal = false;
+				}
                 else if (!hasNumber.IsMatch(input))
                 {
-                    return false;
-                }
+					retVal = false;
+				}
 
                 else if (!hasSymbols.IsMatch(input))
                 {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
+					retVal = false;
+				}             
             }
-
             return retVal;
         }
 
@@ -152,5 +131,11 @@ namespace Security
 
 			return retVal;
         }
+
+		public static int GetPeriodForPasswordCheck()
+		{
+			LoadRules();
+			return periodOfCheck * 1000;
+		}
     }
 }

@@ -12,6 +12,11 @@ using System.Threading;
 using Datebase;
 using System.Security;
 using Security;
+using System.ServiceModel.Security;
+using Manager;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Principal;
+using System.Configuration;
 
 namespace CredentialsStore
 {
@@ -35,18 +40,16 @@ namespace CredentialsStore
 			hostAccountManagement.Close();
         }
 
-		static NetTcpBinding MakeBinding()
+		static void OpenAccountManagementHost(ServiceHost host)
 		{
 			NetTcpBinding binding = new NetTcpBinding();
+
 			binding.Security.Mode = SecurityMode.Transport;
 			binding.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
 			binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
-			return binding;
-		}
-		static void OpenAccountManagementHost(ServiceHost host)
-		{
-			NetTcpBinding binding = MakeBinding();
-			string address = "net.tcp://localhost:5555/AccountManagement";
+
+			string CredentialStoreIp = ConfigurationManager.AppSettings["CredentialStoreIp"];
+			string address = $"net.tcp://{CredentialStoreIp}:5555/AccountManagement";
 		
 			host.AddServiceEndpoint(typeof(IAccountManagement), binding, address);
 			host.AddServiceEndpoint(typeof(IUserAccountManagement), binding, address);
@@ -67,18 +70,46 @@ namespace CredentialsStore
 
 		static void OpenCredentialCheckHost(ServiceHost host)
 		{
-			NetTcpBinding binding = MakeBinding();
-			string address = "net.tcp://localhost:9997/CredentialCheck";
+			string srvCertCN = Formatter.ParseName(WindowsIdentity.GetCurrent().Name);
+			string CredentialStoreIp = ConfigurationManager.AppSettings["CredentialStoreIp"];
+			string address = $"net.tcp://{CredentialStoreIp}:9997/CredentialCheck";
+
+
+			NetTcpBinding binding = new NetTcpBinding()
+			{
+				CloseTimeout = new TimeSpan(0, 60, 0),
+				OpenTimeout = new TimeSpan(0, 60, 0),
+				ReceiveTimeout = new TimeSpan(0, 60, 0),
+				SendTimeout = new TimeSpan(0, 60, 0),
+			};
+			binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate;
+
 			host.AddServiceEndpoint(typeof(ICredentialCheck), binding, address);
+			host.Credentials.ClientCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.ChainTrust;
+			host.Credentials.ClientCertificate.Authentication.RevocationMode = X509RevocationMode.NoCheck;
+			host.Credentials.ServiceCertificate.Certificate = CertManager.GetCertificateFromStorage(StoreName.My, StoreLocation.LocalMachine, srvCertCN);
+			
 			host.Open();
 			Console.WriteLine("CredentialsStore CredetialCheck service opened...");
+
 		}
         static void PasswordAlarm()
         {
-            NetTcpBinding binding = new NetTcpBinding();
-            string address = "net.tcp://localhost:9995/AuthenticationService";
+			string srvCertCN = "authservice";
+			NetTcpBinding binding = new NetTcpBinding()
+			{
+				CloseTimeout = new TimeSpan(0, 60, 0),
+				OpenTimeout = new TimeSpan(0, 60, 0),
+				ReceiveTimeout = new TimeSpan(0, 60, 0),
+				SendTimeout = new TimeSpan(0, 60, 0),
+			};
+			binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Certificate;
+			X509Certificate2 srvCert = CertManager.GetCertificateFromStorage(StoreName.TrustedPeople, StoreLocation.LocalMachine, srvCertCN);
+			string AuthenticationServiceIp = ConfigurationManager.AppSettings["AuthenticationServiceIp"];
+			EndpointAddress address = new EndpointAddress(new Uri($"net.tcp://{AuthenticationServiceIp}:9995/AuthenticationService"),
+									  new X509CertificateEndpointIdentity(srvCert));
 
-			using (ProxyAuthenticationCheck proxy = new ProxyAuthenticationCheck(binding, new EndpointAddress(new Uri(address))))
+			using (ProxyAuthenticationCheck proxy = new ProxyAuthenticationCheck(binding, address))
 			{
 				while (true)
 				{
@@ -97,7 +128,7 @@ namespace CredentialsStore
 					{
 
 					}
-					Thread.Sleep(2250);
+					Thread.Sleep(PasswordPolicy.GetPeriodForPasswordCheck());
 				}
 			}
             

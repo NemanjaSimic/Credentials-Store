@@ -7,6 +7,8 @@ using Contracts;
 using System.ServiceModel;
 using Datebase;
 using System.Security;
+using System.Security.Cryptography.X509Certificates;
+using Manager;
 
 namespace CredentialsStore
 {
@@ -14,8 +16,8 @@ namespace CredentialsStore
     {
         public void ValidateCredential(string username, int password)
         {
-            
-            User user = DBManager.Instance.GetUserByUsername(username);
+			
+			User user = DBManager.Instance.GetUserByUsername(username);
             if(user != null)
             {
                 if(user.Password.Equals(password))

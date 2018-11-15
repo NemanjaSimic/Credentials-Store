@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Security.cs;
 using System;
+using System.Configuration;
 using System.Security;
 using System.Security.Principal;
 using System.ServiceModel;
@@ -17,7 +18,7 @@ namespace Client
 				char op;
 				do
 				{
-					//Console.Clear();
+					//ClearConsoleBuffer();
 					Console.WriteLine("Connect to service like:");
 					Console.WriteLine("1.Admin");
 					Console.WriteLine("2.Regular user");
@@ -27,7 +28,9 @@ namespace Client
 				if (op == '1')
 				{
 					NetTcpBinding binding = MakeBinding();
-					string address = "net.tcp://localhost:5555/AccountManagement";
+					string CredentialStoreIp = ConfigurationManager.AppSettings["CredentialStoreIp"];
+				
+					string address = $"net.tcp://{CredentialStoreIp}:5555/AccountManagement";
 					using (ProxyAccountManagement proxy = new ProxyAccountManagement(binding, new EndpointAddress(new Uri(address))))
 					{
 						bool exit = false;
@@ -36,7 +39,6 @@ namespace Client
 							switch (AdminMenu())
 							{
 								case '1':
-									//Console.Clear();
 									ClearConsoleBuffer();
 									Console.WriteLine("Enter username:");
 									string username = Console.ReadLine();
@@ -44,14 +46,12 @@ namespace Client
 									proxy.CreateAccount(username,password);							
 									break;
 								case '2':
-									//Console.Clear();
 									ClearConsoleBuffer();
 									Console.WriteLine("Enter username:");
 									string usernameForDelete = Console.ReadLine();
 									proxy.DeleteAccount(usernameForDelete);
 									break;
 								case '3':
-									//Console.Clear();
 									ClearConsoleBuffer();
 									Console.WriteLine("Enter username:");
 									string usernameForReset = Console.ReadLine();
@@ -69,16 +69,18 @@ namespace Client
 				{
 					ClearConsoleBuffer();
 					NetTcpBinding bindingForAuthenticationService = MakeBinding();
-					string addressForAuthenticationService = "net.tcp://localhost:9996/AuthenticationService";
+					string AuthenticationServiceIp = ConfigurationManager.AppSettings["AuthenticationServiceIp"];
+					
+					string addressForAuthenticationService = $"net.tcp://{AuthenticationServiceIp}:9996/AuthenticationService";
 					using (ProxyAuthenticationService proxyAuthSrvc = new ProxyAuthenticationService(bindingForAuthenticationService, new EndpointAddress(new Uri(addressForAuthenticationService))))
 					{
 						NetTcpBinding bindingForAccountManagement = MakeBinding();
-						string addressForUserAccountManagement = "net.tcp://localhost:5555/AccountManagement";
+						string CredentialStoreIp = ConfigurationManager.AppSettings["CredentialStoreIp"];
+
+						string addressForUserAccountManagement = $"net.tcp://{CredentialStoreIp}:5555/AccountManagement";					
 						using (ProxyUserAccountManagement proxyAccMngmnt = new ProxyUserAccountManagement(bindingForAccountManagement, new EndpointAddress(new Uri(addressForUserAccountManagement))))
 						{
-							bool exit = false;
-							//string username;
-							//SecureString password;
+							bool exit = false;						
 							while (!exit)
 							{
 								switch (RegularUserMenu())
@@ -126,20 +128,6 @@ namespace Client
 			}
 
 		}
-		//static bool IsAdmin()
-		//{
-		//	bool retVal = false;
-		//	foreach (var group in WindowsIdentity.GetCurrent().Groups)
-		//	{
-		//		SecurityIdentifier sid = (SecurityIdentifier)group.Translate(typeof(SecurityIdentifier));
-		//		var name = sid.Translate(typeof(NTAccount));
-		//		if (name.Value.Contains("Admin"))
-		//		{
-		//			retVal = true;
-		//		}
-		//	}
-		//	return retVal;
-		//}
 		static char AdminMenu()
 		{
 			char answ;
@@ -163,8 +151,7 @@ namespace Client
 		{
 			char answ;
 			do
-			{
-				//Console.Clear();
+			{			
 				ClearConsoleBuffer();
 				Console.WriteLine("Meni:");
 				Console.WriteLine("1.Log in");
@@ -178,7 +165,13 @@ namespace Client
 
 		static NetTcpBinding MakeBinding()
 		{
-			NetTcpBinding binding = new NetTcpBinding();
+			NetTcpBinding binding = new NetTcpBinding()
+			{
+				CloseTimeout = new TimeSpan(0, 60, 0),
+				OpenTimeout = new TimeSpan(0, 60, 0),
+				ReceiveTimeout = new TimeSpan(0, 60, 0),
+				SendTimeout = new TimeSpan(0, 60, 0),
+			};
 			binding.Security.Mode = SecurityMode.Transport;
 			binding.Security.Transport.ProtectionLevel = System.Net.Security.ProtectionLevel.EncryptAndSign;
 			binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
@@ -190,6 +183,7 @@ namespace Client
 			SecureString securePwd = new SecureString();
 			ClearConsoleBuffer();
 			Console.Write("Enter password: ");
+
 			ConsoleKeyInfo key = Console.ReadKey(true);
 			securePwd.AppendChar(key.KeyChar);
 			int hash = securePwd.GetHashCode();
@@ -201,8 +195,10 @@ namespace Client
 				// Append the character to the password.
 				securePwd.AppendChar(key.KeyChar);
 				hash = securePwd.GetHashCode();
-				Console.Write("*");
-
+				if (key.Key != ConsoleKey.Enter)
+				{
+					Console.Write("*");
+				}
 				// Exit if Enter key is pressed.
 			}
 			securePwd.RemoveAt(securePwd.Length - 1);
@@ -219,24 +215,6 @@ namespace Client
 			Console.WriteLine("Enter your username:");
 			username = Console.ReadLine();
 			password = EnterPassword();
-		}
-
-		public void CreateAccount()
-		{
-			Console.WriteLine("Enter username:");
-			string username = Console.ReadLine();
-			SecureString password = EnterPassword();
-
-		}
-
-		public void DeleteAccount(string username)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void ResetPassword(string username, SecureString password)
-		{
-			throw new NotImplementedException();
 		}
 
 		static void ClearConsoleBuffer()
